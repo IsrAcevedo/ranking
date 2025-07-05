@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid md:grid-cols-[1fr_4fr] gap-5 w-[98%] m-auto">
+    {% if blog%}
+    <div class="fondo_secundario p-5">
+        <div class="p-2">
+            {%for entrada in blog %}
+            <div id="{% if loop.first %}ultima-entrada{% endif %}"
+                class=" mb-3 p-2 text-sm font-extrabold cursor-pointer" onclick="mostrarBlog(this)"
+                data-titulo="{{ entrada.titulo }}" data-fecha="{{ entrada.fecha }}"
+                data-contenido="{{ entrada.contenido}}" data-autor="{{entrada.autor_nombre}}">
+                <p>{{entrada.titulo}}
+                </p>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+
+    <div class="fondo_secundario p-5 ">
+
+        {%for entrada in blog %}
+        <div class="mb-5">
+            <h1 id="titulo-blog" class="text-center uppercase font-bold sm:text-xl"></h1>
+        </div>
+        <div>
+            <article id="contenido-blog"></article>
+
+        </div>
+        <div class="flex justify-between mt-5">
+            <p> Autor: <span id="autor-blog"></span></p>
+            <p> Fecha: <span id="fecha-blog"></span></p>
+        </div>
+        {%endfor%}
+    </div>
+    {%endif%}
+</div>
+<script src="../static/js/blog.js"></script>
+{% endblock %}

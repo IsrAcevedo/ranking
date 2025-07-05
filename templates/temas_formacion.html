@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-center uppercase font-semibold text-xl py-4">temas de formacion diaria</h1>
+<div class="grid md:grid-cols-[1fr_3fr] gap-5 w-[98%] m-auto">
+    <div class="fondo_secundario p-5">
+        {%if clases%}
+        <div class="p-2">
+            {%for clase in clases %}
+            <div id="{% if loop.first %}ultima-clase{% endif %}"
+                style="box-shadow: 6px 6px 14px 5px rgba(165,191,168,0.69)"
+                class=" mb-3 p-2 text-sm font-extrabold cursor-pointer" onclick="mostrarDetalle(this)"
+                data-titulo="{{ clase.titulo }}" data-fecha="{{ clase.fecha }}"
+                data-descripcion="{{ clase.descripcion }}">
+                <p>{{clase.titulo}}
+                </p>
+                <p class="text-end text-xs font-extralight">{{clase.fecha}}</p>
+            </div>
+            {%endfor%}
+        </div>
+        {%endif%}
+    </div>
+    <div class="fondo_secundario p-5 ">
+        <h2 id="titulo-clase" class=" font-black text-xl"></h2>
+        <p id="fecha-clase" class="text-xs font-extralight text-red-600"></p>
+        <p id="descripcion-clase" class="mt-5 whitespace-pre-line "></p>
+    </div>
+</div>
+<script src="../static/js/temas-formacion.js"></script>
+{% endblock %}

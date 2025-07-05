@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="md:w-2/3 m-auto fondo_secundario p-8 mt-3">
+    <h3 class="text-center uppercase font-black mb-3">observaciones del instructor</h3>
+    {% for observacion in observaciones%}
+    <div class="p-4 mb-5" style="box-shadow: 6px 6px 14px 5px rgba(165,191,168,0.69)">
+        <p class="capitalize font-bold fondo_verde p-1 text-white">{{observacion.descripcion}}</p>
+
+        <div class="flex justify-between p-2">
+            <p class="text-xs font-bold">Tipo de observacion: <br> <span class="font-normal">{{observacion.tipo}}</span>
+            </p>
+            <p class="text-xs font-bold">estado: <br> <span class="font-normal">{{observacion.estado}}</span></p>
+            <p class="text-xs font-bold">fecha de observacion: <br> <span
+                    class="font-normal">{{observacion.fecha}}</span></p>
+        </div>
+    </div>
+    {%endfor%}
+
+</div>
+
+{% endblock %}

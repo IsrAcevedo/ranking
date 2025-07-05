@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div
+    class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-14 rounded-2xl p-8 h-auto flex items-center justify-center flex-col">
+    <h3 class="text-center uppercase font-bold">programas de formacion</h3>
+    <form action="/admin" method="POST" class="flex flex-col justify-between items-center h-2/3 w-5/6 mt-7 ">
+        <div>
+
+            <select name="ficha" id="ficha" required class="text-xl font-black outline-none">
+                <option value="">seleccione</option>
+                {%for curso in cursos%}
+                <option value="{{curso.ficha}}">{{curso.ficha}}</option>
+                {%endfor%}
+            </select>
+        </div>
+        <div>
+            <input class="cursor-pointer text-white uppercase font-bold px-8 py-2 rounded-2xl mt-10 fondo_verde"
+                type="submit" value="Ingresar">
+        </div>
+
+    </form>
+
+    <div class="flex flex-col sm:flex-row justify-between w-full mt-16 sm:gap-5 gap-3 text-center ">
+        <a href="{{url_for('crear_curso')}}"
+            class="sombra_verde p-2 rounded-md font-semibold  hover:bg-lime-800 hover:text-white transition-all duration-800 ">añadir
+            programa de formacion</a>
+        <a href="{{url_for('añadir_aprendiz')}}"
+            class="sombra_verde p-2 rounded-md font-semibold   hover:bg-lime-800 hover:text-white transition-all duration-800 ">añadir
+            aprenidz</a>
+        <a href="{{url_for('nueva_entrada')}}"
+            class="sombra_verde p-2 rounded-md font-semibold  hover:bg-lime-800 hover:text-white transition-all duration-800 ">escribir
+            blog</a>
+
+
+    </div>
+
+</div>
+{% endblock %}

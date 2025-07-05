@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+{%if error is not none%}
+<p class="bg-red-600 p-2 text-white text-center">{{error}}</p>
+{%endif%}
+<div
+    class="sm:w-2/5 w-[95%] mx-auto fondo_secundario mt-14 rounded-2xl p-8 h-96 flex flex-col items-center justify-center">
+    <form action="{{url_for('guardando_curso')}}" method="POST"
+        class="flex flex-col justify-between items-center h-2/3 w-full mt-7 ">
+        <div class="flex flex-col w-full ">
+            <label for="ficha" class="capitalize text-xl font-bold w-1/3 ml-2">ficha</label>
+            <input type="number" name="ficha" id="ficha" value="{{curso[0] | default('')}}"
+                class="border border-gray-300 p-2  rounded-xl borde_verde sombra_verde outline-none" min="0">
+        </div>
+        <div class="flex w-full flex-col  mt-5">
+            <label for="nombre" class=" capitalize text-xl font-bold w-1/3  ml-2 ">nombre</label>
+            <input type="text" name="nombre" id="nombre" value="{{curso[1] | default('')}}"
+                class="border border-gray-300 p-2 borde_verde rounded-xl sombra_verde outline-none">
+        </div>
+        <div class="sm:w-1/2 w-full flex justify-between items-center mt-10">
+            <div>
+
+
+                <input class="fondo_verde text-white uppercase font-bold py-2 rounded-2xl  cursor-pointer w-fit px-4"
+                    type="submit" value="registrar">
+            </div>
+            <div>
+                <a href="{{url_for('panel')}}"
+                    class="bg-white text-red-600 flex items-center gap-2 border-2 border-red-600 w-fit  px-5 py-2 hover:bg-red-800 transition-all duration-600 hover:text-white font-semibold rounded-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                        class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
+                        <path fill-rule="evenodd"
+                            d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z" />
+                    </svg> volver
+                </a>
+            </div>
+        </div>
+
+    </form>
+
+
+</div>
+
+
+{% endblock %}

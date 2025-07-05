@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{%set blog=True %}
+{% block content %}
+<div class="sm:flex gap-3">
+    <div class="sm:w-1/4 fondo_secundario mt-5 sm:ml-3 w-[95%] m-auto ">
+        <h3 class="text-center uppercase font-extrabold fondo_verde text-white py-3 ">Temas de formacion
+        </h3>
+        {{error}}
+        <div id="nuevo-tema" style="box-shadow: 6px 6px 14px 5px rgba(165,191,168,0.69)"
+            class=" mb-3 px-2 mt-2 py-3 text-sm font-extrabold">
+            <button
+                class="flex justify-center w-full bg-red-600 hover:bg-red-800 text-white py-2 rounded-xl cursor-pointer">
+                añadir nuevo tema
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor"
+                    class="bi bi-hand-index" viewBox="0 0 16 16">
+                    <path
+                        d="M6.75 1a.75.75 0 0 1 .75.75V8a.5.5 0 0 0 1 0V5.467l.086-.004c.317-.012.637-.008.816.027.134.027.294.096.448.182.077.042.15.147.15.314V8a.5.5 0 1 0 1 0V6.435l.106-.01c.316-.024.584-.01.708.04.118.046.3.207.486.43.081.096.15.19.2.259V8.5a.5.5 0 0 0 1 0v-1h.342a1 1 0 0 1 .995 1.1l-.271 2.715a2.5 2.5 0 0 1-.317.991l-1.395 2.442a.5.5 0 0 1-.434.252H6.035a.5.5 0 0 1-.416-.223l-1.433-2.15a1.5 1.5 0 0 1-.243-.666l-.345-3.105a.5.5 0 0 1 .399-.546L5 8.11V9a.5.5 0 0 0 1 0V1.75A.75.75 0 0 1 6.75 1M8.5 4.466V1.75a1.75 1.75 0 1 0-3.5 0v5.34l-1.2.24a1.5 1.5 0 0 0-1.196 1.636l.345 3.106a2.5 2.5 0 0 0 .405 1.11l1.433 2.15A1.5 1.5 0 0 0 6.035 16h6.385a1.5 1.5 0 0 0 1.302-.756l1.395-2.441a3.5 3.5 0 0 0 .444-1.389l.271-2.715a2 2 0 0 0-1.99-2.199h-.581a5 5 0 0 0-.195-.248c-.191-.229-.51-.568-.88-.716-.364-.146-.846-.132-1.158-.108l-.132.012a1.26 1.26 0 0 0-.56-.642 2.6 2.6 0 0 0-.738-.288c-.31-.062-.739-.058-1.05-.046zm2.094 2.025" />
+                </svg>
+
+            </button>
+        </div>
+
+        <div id="form-nuevo-tema" style="box-shadow: 6px 6px 14px 5px rgba(165,191,168,0.69)"
+            class="hidden mb-3 px-2 mt-2 py-3 text-sm font-extralight ">
+            <form action="/registrar_clase" method="POST">
+                <input type="hidden" value="{{ficha}}" name="ficha">
+                <div class="flex flex-col ">
+                    <label for="titulo">Titulo</label>
+                    <input id="titulo" name="titulo" type="text" class="border-2 p-2" required>
+                </div>
+                <div class="flex flex-col my-3">
+                    <label for="descripcion">Descripcion</label>
+                    <textarea name="descripcion" id="descripcion" rows="8" hidden></textarea>
+                    <trix-editor input="descripcion" class="mt-1 block w-full h-40"></trix-editor>
+                </div>
+                <div class="flex flex-col">
+                    <label for="fecha">fecha</label>
+                    <input id="fecha" name="fecha" type="date" class="border-2 p-2" required>
+                </div>
+                <div class="mt-5 flex justify-center">
+                    <input type="submit" value="Guardar"
+                        class="fondo_verde uppercase sm:px-5 py-1 sm:w-auto w-5/6 rounded-xl text-white font-bold cursor-pointer">
+                </div>
+            </form>
+        </div>
+        {%if clases%}
+        <div class="p-2">
+            {%for clase in clases %}
+            <div style="box-shadow: 6px 6px 14px 5px rgba(165,191,168,0.69)" class=" mb-3 p-2 text-sm font-extrabold">
+                <p>{{clase.titulo}}
+                </p>
+                <p class="text-end text-xs font-extralight">{{clase.fecha}}</p>
+            </div>
+            {%endfor%}
+        </div>
+        {%endif%}
+    </div>
+    <div class="sm:w-3/4 mr-3 mt-5 w-[95%] m-auto">
+        {%if aprendices %}
+        <table class="fondo_secundario w-full ">
+            <tr class="grid grid-cols-[2fr_4fr_1fr_1fr_1fr]  py-3 px-5 fondo_verde text-white  uppercase">
+                <th class="text-start">doc</th>
+                <th class="text-start">nombre completo</th>
+                <th class="text-start">puntos</th>
+                <th class="text-start">edad</th>
+                <th class="text-start">accion</th>
+
+            </tr>
+            {% for aprendiz in aprendices %}
+
+            <tr class="grid grid-cols-[2fr_4fr_1fr_1fr_1fr] text-start  sm:py-3  sm:px-5 border-2 py-1 px-2">
+                <td><input class="w-full" name="documento" type="text" value="{{aprendiz.di}}"
+                        class="focus:outline-none" readonly>
+                </td>
+                <td class="">{{aprendiz.nombre_completo}}</td>
+                <td> <input class="w-full" name="puntos" type="text" value="{{aprendiz.puntos}}" class="text-center"
+                        readonly></td>
+                <td>
+                    {% set edad = fecha_actual.year - aprendiz.fecha_nac.year
+                    - ((fecha_actual.month, fecha_actual.day) < (aprendiz.fecha_nac.month, aprendiz.fecha_nac.day)) %}
+                        <input class="w-full" name="puntos" type="text" value="{{edad}}" class="text-center" readonly>
+                </td>
+                <td>
+                    <div class="flex gap-3">
+                        <a href="{{url_for('agregar_observacion',codigo=aprendiz.di, ficha=ficha)}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5" />
+                                <path
+                                    d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
+                            </svg>
+                        </a>
+
+                        <a
+                            href="{{url_for('agregar_calificacion',codigo=aprendiz.di, puntaje=aprendiz.puntos, ficha=ficha )}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path
+                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                <path fill-rule="evenodd"
+                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                            </svg>
+                        </a>
+                        <a href="{{url_for('editar_aprendiz',di=aprendiz.di)}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                                <path
+                                    d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
+                            </svg>
+                        </a>
+
+                    </div>
+                </td>
+            </tr>
+
+            {%endfor%}
+        </table>
+        {%endif%}
+        <p>{{respuesta}}</p>
+        <div class="flex justify-end mt-5">
+            <a href="{{url_for('añadir_aprendiz',ficha=ficha)}}"
+                class="fondo_verde sombra_verde py-2 px-4 rounded-md font-semibold  hover:bg-lime-800  transition-all duration-800 ">añadir
+                aprenidz</a>
+        </div>
+    </div>
+</div>
+
+<script src="../static/js/script.js"></script>
+{% endblock %}

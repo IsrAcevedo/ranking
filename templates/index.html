@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{%set cuadro_busqueda=True %}
+{% block content %}
+{% if ficha%}
+<nav class="flex justify-end mt-2 gap-2 w-5/6 m-auto">
+    <a href="{{url_for('temas_formacion', ficha=ficha)}}"
+        class="fondo_verde text-white font-semibold py-2 px-4 rounded shadow-md transition duration-200 color-amarillo">ver
+        temas de formacion</a>
+    <a href="{{url_for('blog')}}"
+        class=" fondo_verde text-white font-semibold py-2 px-4 rounded shadow-md transition duration-200 color-amarillo">blog
+        de programacion</a>
+    <a href="{{url_for('index')}}"
+        class=" fondo_verde text-white font-semibold py-2 px-4 rounded shadow-md transition duration-200 color-amarillo">salir</a>
+
+
+</nav>
+{%endif%}
+<div class=" container fuente_principal min-h-[250px] mt-10">
+    {% if formulario is none%}
+    <div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-4 rounded-2xl p-8 min-h-[300px] flex items-center flex-col">
+        <p class="uppercase font-bold md:text-xl text-center">clasificacion de aprendices del sena</p>{{ficha}}
+        <p class="capitalize  mt-8">selecciona un programa de formacion</p>
+        <form action="/ranking" method="POST" class="flex flex-col justify-between items-center h-2/3 w-5/6 mt-5 ">
+            <div>
+
+                <select name="ficha" id="ficha" class="p-3 font-black md:text-2xl text-xl " required>
+                    <option value="">seleccione</option>
+                    <option value=3149465>3149465</option>
+                    <option value=2909308>2909308</option>
+                    <option value=2909362>2909362</option>
+                </select>
+            </div>
+            <div>
+                <input class="fondo_verde cursor-pointer text-white uppercase font-bold px-8 py-2 rounded-2xl mt-6"
+                    type="submit" value="mostrar clasificacion">
+            </div>
+            {%if usuario %}
+            <p class="text-xs mt-10 capitalize">ir al panel <a href="{{url_for('panel')}}"
+                    class="underline italic ml-1">
+                    clic aqui</a></p>
+            {%else%}
+            <p class="text-xs mt-10 capitalize">¿eres instructor? inicia sesion <a href="{{url_for('login')}}"
+                    class="underline italic ml-1">
+                    clic aqui</a></p>
+            {%endif%}
+
+        </form>
+
+    </div>
+    {% endif%}
+    <div class="md:grid grid-cols-3 gap-10 mt-16 p-5">
+        {% for item in aprendices %}
+        <a href="{{url_for('info_aprendiz', codigo=item.di)}}">
+            <div class="fondo_secundario p-3 rounded-2xl mb-5 md:mb-0 hover:-translate-y-2 transition duration-700">
+                <div class="flex justify-between items-center">
+                    <p class="text-center">curso: <span class="color_principal font-bold">{{item.curso_id}}</span>
+                    </p>
+                    <p class="text-center">puesto: <span
+                            class="text-2xl color_principal font-bold">{{item.puesto}}</span>
+                    </p>
+                </div>
+                <div class="flex justify-between mt-5">
+                    <div class="w-14 flex h-14 items-center justify-center bg-orange-500 rounded-full">
+                        <p class=" uppercase font-bold text-2xl text-white w-100 text-center">{{item.iniciales}}</p>
+                    </div>
+                    <div class="flex-2/3 ml-5 capitalize  text-xl">
+                        <p class="fuente_titulo">{{item.nombre}}</p>
+                        <p class="text-base font-normal">{{item.apellidos}}</p>
+                    </div>
+                    <div class="flex-auto font-bold text-3xl color_principal">
+                        <p>
+                            {{item.puntos}}<span class="text-xs">pts</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="max-w-xl mx-auto mt-8">
+                    <div class="flex justify-between px-1">
+                        <p class="text-md  ">rendimiento </p>
+                        <p class="text-xl font-bold  "> {{ item.rendimiento }}%</p>
+
+                    </div>
+
+                    <div class="w-full bg-gray-300 rounded-full h-4">
+                        <div class="fondo_verde h-4 rounded-full transition-all duration-500"
+                            style="width: {{ item.rendimiento }}%;"></div>
+                    </div>
+                </div>
+
+            </div>
+        </a>
+        {% endfor%}
+    </div>
+
+</div>
+{% endblock %}

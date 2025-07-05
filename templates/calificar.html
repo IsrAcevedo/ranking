@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+{%if observacion is not none %}
+<div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-10 rounded-2xl p-8 h-96 ">
+    <form action="/guardar_observacion" method="POST">
+        <fieldset>
+            <legend class="capitalize font-extrabold text-center mb-5">agregar observacion al aprendiz </legend>
+            <input type="hidden" name="ficha" value="{{ ficha }}">
+            <input name="documento" type="text" value="{{codigo}}" hidden>
+            <div>
+                <label for="tipo" class="font-semibold">Tipo de observacion:</label>
+                <select name="tipo" id="tipo" required class=" font-extralight outline-none">
+                    <option value="">seleccione</option>
+                    <option value="Inasistencia">Inasistencia</option>
+                    <option value="Llegada Tarde">Llegada Tarde</option>
+                    <option value="Tarea Pendiente">Tarea Pendiente</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div class="flex flex-col my-3 ">
+                <label for="observacion" class="font-semibold">Observacion:</label>
+                <textarea name="observacion" id="observacion" rows="5"
+                    class="outline-none border-2 p-2 font-extralight"></textarea>
+            </div>
+            <div>
+                <label for="estado" class="font-semibold">Estado:</label>
+                <select name="estado" id="estado" required class=" font-extralight outline-none">
+                    <option value="">seleccione</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Resuelto">Resuelto</option>
+                    <option value="Registrado">Registrado</option>
+                </select>
+            </div>
+
+        </fieldset>
+        <div class="mt-5 flex justify-center">
+            <input type="submit" value="Guardar"
+                class="fondo_verde uppercase sm:px-5 py-1 sm:w-auto w-5/6 rounded-xl text-white font-bold cursor-pointer">
+        </div>
+    </form>
+
+    {{respuesta}}
+</div>
+{%endif%}
+
+{%if calificacion is not none %}
+<div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-10 rounded-2xl p-8 h-70 ">
+    <form action="{{ url_for('calificar') }}" method="POST" class="h-full">
+        <div class="flex flex-col items-center justify-between h-full">
+            <input name="documento" type="text" value="{{codigo}}" hidden>
+            <input type="hidden" name="ficha" value="{{ ficha }}">
+            <label class="font-bold">Acomulado</label>
+            <input name="puntos" type="text" value="{{puntaje}}" readonly
+                class="w-1/2 m-auto text-center outline-none text-2xl font-bold mb-5 bg-red-600 text-white">
+            <label class="font-bold">Calificacion</label>
+            <input name="calificacion" type="number" placeholder="?"
+                class="w-1/2 m-auto text-center py-1 text-3xl font-bold  px-2  outline-none  bg-blue-700 text-white"
+                min="0" max="20">
+            <input type="submit" value="Guardar"
+                class="fondo_verde uppercase sm:px-5 py-1 sm:w-auto w-5/6 rounded-xl text-white font-bold mt-10 cursor-pointer">
+        </div>
+    </form>
+</div>
+{%endif%}
+
+{% endblock %}

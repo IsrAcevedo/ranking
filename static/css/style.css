@@ -1,0 +1,70 @@
+:root {
+    --blanco: #fff;
+    --verde_lima: #39A900;
+    --verde_lima_hover: #294f2b;
+    --gris_oscuro: #212121;
+    --grisClaro: #EEEEEE;
+    --Amarillo_suave: #FFF176;
+    --fuentePrincipal: 'Roboto', sans-serif;
+    --fuenteTitulo: 'Poppins', sans-serif;
+
+
+}
+
+.fondo_verde {
+    background-color: var(--verde_lima);
+}
+
+.fondo_verde:hover {
+    background-color: var(--verde_lima_hover);
+    transition-duration: 0.5s;
+}
+
+.fondo_primario {
+    background-color: var(--grisClaro);
+}
+
+.fondo_secundario {
+    background-color: var(--blanco);
+}
+
+.borde_verde {
+    border-bottom: var(--verde_lima) solid 4px;
+
+}
+
+.color-amarillo:hover {
+    color: var(--Amarillo_suave);
+}
+
+.fuente_titulo {
+    font-family: var(--fuenteTitulo);
+    font-weight: bold;
+}
+
+.fuente_principal {
+    font-family: var(--fuentePrincipal);
+}
+
+.sombra_verde {
+    box-shadow: 1px 6px 14px -3px rgba(67, 160, 71, 0.8);
+}
+
+.color_principal {
+    color: var(--verde_lima);
+}
+
+.footer {
+    background-color: var(--gris_oscuro);
+}
+
+/* eliminar controles caja de texto numero */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
