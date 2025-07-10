@@ -314,4 +314,5 @@ def cerrar_sesion():
   error=None
   return render_template('login.html', error=error)
 
-app.run(debug=False)
+if __name__=='__main__':
+  app.run(debug=False)
