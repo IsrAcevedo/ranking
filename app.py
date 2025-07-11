@@ -31,8 +31,11 @@ def ranking():
     parametros=(ficha,)
     for aprendiz in consulta(query, parametros):
       total_clases=aprendiz['cantidad_clases']
-      puntos_maximos=total_clases*20
-      rendimiento = (aprendiz['puntos'] / puntos_maximos) * 100
+      if total_clases !=0:
+        puntos_maximos=total_clases*20
+        rendimiento = (aprendiz['puntos'] / puntos_maximos) * 100
+      else:
+        rendimiento=0
       aprendiz['rendimiento'] = round(rendimiento, 2)
       aprendiz['iniciales']=f'{aprendiz['nombre'][0]}{aprendiz['apellidos'][0]}'      
       lista_aprendices.append(aprendiz)
@@ -52,8 +55,11 @@ def aprendiz():
     lista_aprendices = []
     for aprendiz in aprendices:
       total_clases=aprendiz['cantidad_clases']
-      puntos_maximos=total_clases*20
-      rendimiento = (aprendiz['puntos'] / puntos_maximos) * 100
+      if total_clases !=0:
+        puntos_maximos=total_clases*20
+        rendimiento = (aprendiz['puntos'] / puntos_maximos) * 100
+      else:
+        rendimiento=0
       aprendiz['rendimiento'] = round(rendimiento, 2)
       aprendiz['iniciales']=f'{aprendiz['nombre'][0]}{aprendiz['apellidos'][0]}'
       lista_aprendices.append(aprendiz)
@@ -314,5 +320,3 @@ def cerrar_sesion():
   error=None
   return render_template('login.html', error=error)
 
-if __name__=='__main__':
-  app.run(debug=False)
