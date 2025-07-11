@@ -2,24 +2,27 @@
 {%set cuadro_busqueda=True %}
 {% block content %}
 {% if ficha%}
-<nav class="flex justify-end mt-2 gap-2 w-5/6 m-auto">
+<nav class="flex mt-2 items-center justify-center gap-2 w-[95%] m-auto">
     <a href="{{url_for('temas_formacion', ficha=ficha)}}"
-        class="fondo_verde text-white font-semibold py-2 px-4 rounded shadow-md transition duration-200 color-amarillo">ver
-        temas de formacion</a>
+        class="fondo_verde text-white font-semibold px-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center">
+        <button>ver
+            temas de formacion </button></a>
     <a href="{{url_for('blog')}}"
-        class=" fondo_verde text-white font-semibold py-2 px-4 rounded shadow-md transition duration-200 color-amarillo">blog
-        de programacion</a>
+        class=" fondo_verde text-white font-semibold  px-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center"><button>
+            blog
+            de programacion</button></a>
     <a href="{{url_for('index')}}"
-        class=" fondo_verde text-white font-semibold py-2 px-4 rounded shadow-md transition duration-200 color-amarillo">salir</a>
+        class=" fondo_verde text-white font-semibold  px-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center"><button>salir</button></a>
 
 
 </nav>
 {%endif%}
 <div class=" container fuente_principal min-h-[250px] mt-10">
     {% if formulario is none%}
-    <div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-4 rounded-2xl p-8 min-h-[300px] flex items-center flex-col">
+    <div
+        class="md:w-2/5 w-[95%] mx-auto fondo_secundario mt-4 rounded-2xl p-8 min-h-[300px] flex items-center flex-col">
         <p class="uppercase font-bold md:text-xl text-center">clasificacion de aprendices del sena</p>{{ficha}}
-        <p class="capitalize  mt-8">selecciona un programa de formacion</p>
+        <p class="capitalize  mt-8">selecciona programa de formacion</p>
         <form action="/ranking" method="POST" class="flex flex-col justify-between items-center h-2/3 w-5/6 mt-5 ">
             <div>
 
