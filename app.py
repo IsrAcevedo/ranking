@@ -197,7 +197,6 @@ def registrar_clase():
       exito=insertar(query,parametros)
       if exito:
         insertar(update,parametro_update)
-  
       return redirect(url_for('admin',ficha=ficha))
     except Exception as e:
       return render_template('admin.html',ficha=ficha, error= f'clases no registrada \n {e}')
@@ -321,4 +320,3 @@ def cerrar_sesion():
   error=None
   return render_template('login.html', error=error)
 
-app.run(debug=True)
