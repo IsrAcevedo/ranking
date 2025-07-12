@@ -10,11 +10,15 @@ def consulta(consulta, parametros=None):
     return resultado
     
 def insertar(consulta, parametros=None):
-    conexion=obtener_conexion()
-    cursor=conexion.cursor()
-    cursor.execute(consulta,parametros or())
-    conexion.commit()
-    cursor.close()
-    conexion.close()
-    return 'datos insertados correctamente'
+    try:
+        conexion=obtener_conexion()
+        cursor=conexion.cursor()
+        cursor.execute(consulta,parametros or())
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+        return True
+    except Exception as e:
+        print(f'error al insertar {e}')
+        return False
         

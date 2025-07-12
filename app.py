@@ -187,15 +187,16 @@ def registrar_clase():
     ficha = request.form.get('ficha')
     titulo = request.form.get('titulo')
     descripcion = request.form.get('descripcion')
-    # if '\\n' in descripcion: #guarda saltos de linea reales.
-    #   descripcion = descripcion.encode().decode('unicode_escape')
     fecha = request.form.get('fecha') 
-    print(descripcion)
     query=('insert into clases(curso_id,titulo,descripcion,fecha) values(%s,%s,%s,%s)')
     parametros=(ficha,titulo,descripcion,fecha)
+    update=('UPDATE cursos SET cantidad_clases = cantidad_clases + 1 where ficha = %s')
+    parametro_update=(ficha,)
     
     try:
-      insertar(query,parametros)
+      exito=insertar(query,parametros)
+      if exito:
+        insertar(update,parametro_update)
   
       return redirect(url_for('admin',ficha=ficha))
     except Exception as e:
@@ -320,3 +321,4 @@ def cerrar_sesion():
   error=None
   return render_template('login.html', error=error)
 
+app.run(debug=True)
