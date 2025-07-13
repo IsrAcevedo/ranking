@@ -19,7 +19,9 @@ def agregar_usuario_a_templates():
 #ruta para carga pagina de inicio
 @app.route('/')
 def index():
-  return render_template('index.html', formulario = None)
+  query=('select ficha from cursos')
+  cursos=consulta(query)
+  return render_template('index.html', formulario = None, cursos=cursos)
 
 #ruta para mostrar en pantalla todos los aprendices de un curso especifico
 @app.route('/ranking', methods=['GET','POST'])
@@ -320,3 +322,4 @@ def cerrar_sesion():
   error=None
   return render_template('login.html', error=error)
 
+app.run(debug=True)

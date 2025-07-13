@@ -17,7 +17,7 @@
 
 </nav>
 {%endif%}
-<div class=" container fuente_principal min-h-[250px] mt-10">
+<div class="mx-auto fuente_principal min-h-[250px] mt-10 ">
     {% if formulario is none%}
     <div
         class="md:w-2/5 w-[95%] mx-auto fondo_secundario mt-4 rounded-2xl p-8 min-h-[300px] flex items-center flex-col">
@@ -28,9 +28,9 @@
 
                 <select name="ficha" id="ficha" class="p-3 font-black md:text-2xl text-xl " required>
                     <option value="">seleccione</option>
-                    <option value=3149465>3149465</option>
-                    <option value=2909308>2909308</option>
-                    <option value=2909362>2909362</option>
+                    {%for curso in cursos%}
+                    <option value="{{curso.ficha}}">{{curso.ficha}}</option>
+                    {%endfor%}
                 </select>
             </div>
             <div>
