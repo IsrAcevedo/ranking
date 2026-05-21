@@ -19,9 +19,38 @@ def agregar_usuario_a_templates():
 #ruta para carga pagina de inicio
 @app.route('/')
 def index():
-  query=('select ficha from cursos')
-  cursos=consulta(query)
-  return render_template('index.html', formulario = None, cursos=cursos)
+  # Top aprendiz por ficha para el carrusel de la landing
+  query_top = """
+    SELECT a.di, a.nombre, a.apellidos, a.puntos, a.puesto, a.curso_id, c.cantidad_clases
+    FROM (
+      SELECT *, RANK() OVER(PARTITION BY curso_id ORDER BY puntos DESC) as puesto
+      FROM aprendices
+    ) as a
+    INNER JOIN cursos as c ON a.curso_id = c.ficha
+    WHERE a.puesto = 1
+  """
+  top_aprendices = []
+  for ap in consulta(query_top):
+    total_clases = ap['cantidad_clases']
+    if total_clases != 0:
+      puntos_maximos = total_clases * 20
+      rendimiento = (ap['puntos'] / puntos_maximos) * 100
+    else:
+      rendimiento = 0
+    ap['rendimiento'] = round(rendimiento, 2)
+    ap['iniciales'] = f"{ap['nombre'][0]}{ap['apellidos'][0]}"
+    top_aprendices.append(ap)
+    
+  # Programas de formación y conteo de aprendices
+  query_programas = """
+    SELECT c.ficha, c.nombre_curso, COUNT(a.di) as total_aprendices
+    FROM cursos as c
+    LEFT JOIN aprendices as a ON c.ficha = a.curso_id
+    GROUP BY c.ficha, c.nombre_curso
+  """
+  programas = consulta(query_programas)
+  
+  return render_template('index.html', formulario=None, top_aprendices=top_aprendices, programas=programas)
 
 #ruta para mostrar en pantalla todos los aprendices de un curso especifico
 @app.route('/ranking', methods=['GET','POST'])
@@ -37,7 +66,7 @@ def ranking():
         puntos_maximos=total_clases*20
         rendimiento = (aprendiz['puntos'] / puntos_maximos) * 100
       else:
-        rendimiento=0
+        rendimiento=0  
       aprendiz['rendimiento'] = round(rendimiento, 2)
       aprendiz['iniciales']=f'{aprendiz['nombre'][0]}{aprendiz['apellidos'][0]}'      
       lista_aprendices.append(aprendiz)
@@ -61,7 +90,7 @@ def aprendiz():
         puntos_maximos=total_clases*20
         rendimiento = (aprendiz['puntos'] / puntos_maximos) * 100
       else:
-        rendimiento=0
+        rendimiento=0  
       aprendiz['rendimiento'] = round(rendimiento, 2)
       aprendiz['iniciales']=f'{aprendiz['nombre'][0]}{aprendiz['apellidos'][0]}'
       lista_aprendices.append(aprendiz)
@@ -189,16 +218,16 @@ def registrar_clase():
     ficha = request.form.get('ficha')
     titulo = request.form.get('titulo')
     descripcion = request.form.get('descripcion')
+    # if '\\n' in descripcion: #guarda saltos de linea reales.
+    #   descripcion = descripcion.encode().decode('unicode_escape')
     fecha = request.form.get('fecha') 
+    print(descripcion)
     query=('insert into clases(curso_id,titulo,descripcion,fecha) values(%s,%s,%s,%s)')
     parametros=(ficha,titulo,descripcion,fecha)
-    update=('UPDATE cursos SET cantidad_clases = cantidad_clases + 1 where ficha = %s')
-    parametro_update=(ficha,)
     
     try:
-      exito=insertar(query,parametros)
-      if exito:
-        insertar(update,parametro_update)
+      insertar(query,parametros)
+  
       return redirect(url_for('admin',ficha=ficha))
     except Exception as e:
       return render_template('admin.html',ficha=ficha, error= f'clases no registrada \n {e}')
@@ -321,4 +350,5 @@ def cerrar_sesion():
   session.pop('user',None)
   error=None
   return render_template('login.html', error=error)
+
 

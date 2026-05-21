@@ -17,39 +17,570 @@
 
 </nav>
 {%endif%}
-<div class="mx-auto fuente_principal min-h-[250px] mt-10 ">
+<div class=" container fuente_principal min-h-[250px] mt-10">
     {% if formulario is none%}
-    <div
-        class="md:w-2/5 w-[95%] mx-auto fondo_secundario mt-4 rounded-2xl p-8 min-h-[300px] flex items-center flex-col">
-        <p class="uppercase font-bold md:text-xl text-center">clasificacion de aprendices del sena</p>{{ficha}}
-        <p class="capitalize  mt-8">selecciona programa de formacion</p>
-        <form action="/ranking" method="POST" class="flex flex-col justify-between items-center h-2/3 w-5/6 mt-5 ">
-            <div>
+    <!-- HERO SECTION -->
+    <section class="relative w-full h-screen min-h-screen flex items-center bg-white overflow-hidden -mt-24 pt-24">
+        <!-- Video placeholder background -->
+        <div class="absolute inset-0 z-0">
+            <!-- Video de fondo -->
+            <video src="{{url_for('static', filename='video/prueba.mp4')}}" autoplay loop muted playsinline
+                class="absolute inset-0 w-full h-full object-cover"></video>
+            <!-- Capa de transparencia sobre el video para poder leer el texto -->
+            <div class="absolute inset-0 bg-white/80"></div>
+        </div>
 
-                <select name="ficha" id="ficha" class="p-3 font-black md:text-2xl text-xl " required>
-                    <option value="">seleccione</option>
-                    {%for curso in cursos%}
-                    <option value="{{curso.ficha}}">{{curso.ficha}}</option>
-                    {%endfor%}
-                </select>
+        <!-- Content -->
+        <div class="relative z-10 w-full mx-auto px-8 sm:px-16 flex">
+            <!-- Left third -->
+            <div class="w-full md:w-2/3 lg:w-1/3 flex flex-col items-start space-y-6">
+                <!-- Badge -->
+                <div
+                    class="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-bold border border-green-200">
+                    <span>🏆</span>
+                    <span>Sistema de Clasificación Académica</span>
+                </div>
+
+                <!-- Title -->
+                <h1 class="text-5xl lg:text-6xl font-extrabold text-[#1f2937] leading-tight font-sans tracking-tight">
+                    Ranking de <br />
+                    Aprendices <span class="text-green-700">SENA</span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="text-gray-600 text-lg leading-relaxed font-medium">
+                    Consulta el desempeño, participación y reconocimiento de los aprendices en tiempo real.
+                </p>
+
+                <!-- Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 w-full pt-2">
+                    <button type="button" onclick="document.getElementById('modal-ranking').classList.remove('hidden')"
+                        class="flex items-center justify-center gap-2 bg-[#2e7d32] hover:bg-green-800 text-white px-6 py-3 rounded-xl font-bold transition shadow-lg w-full sm:w-auto cursor-pointer">
+                        Ver ranking
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </button>
+                    <a href="#programas"
+                        class="flex items-center justify-center gap-2 bg-white border-2 border-[#2e7d32] text-[#2e7d32] hover:bg-green-50 px-6 py-3 rounded-xl font-bold transition">
+                        Explorar programas
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="flex flex-wrap items-center gap-4 lg:gap-6 pt-8 border-t border-gray-200 w-full mt-6">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-8 h-8 text-[#2e7d32]" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
+                            </path>
+                        </svg>
+                        <div class="leading-tight">
+                            <span class="block font-extrabold text-gray-900 text-lg">+500</span>
+                            <span class="text-xs text-gray-500 font-semibold">Aprendices</span>
+                        </div>
+                    </div>
+                    <div class="h-10 border-l-2 border-gray-200"></div>
+                    <div class="flex items-center gap-3">
+                        <svg class="w-8 h-8 text-[#2e7d32]" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 8.56l-1.222.524a1 1 0 000 1.838l7 3a1 1 0 00.788 0l7-3a1 1 0 000-1.838H16.8l-6.322 2.71a1 1 0 01-.788 0L3.31 8.56z">
+                            </path>
+                        </svg>
+                        <div class="leading-tight">
+                            <span class="block font-extrabold text-gray-900 text-lg">+10</span>
+                            <span class="text-xs text-gray-500 font-semibold">Programas</span>
+                        </div>
+                    </div>
+                    <div class="h-10 border-l-2 border-gray-200"></div>
+                    <div class="flex items-center gap-3">
+                        <svg class="w-8 h-8 text-[#2e7d32]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                            </path>
+                        </svg>
+                        <div class="leading-tight">
+                            <span class="block font-extrabold text-gray-900 text-lg">Actualización</span>
+                            <span class="text-xs text-gray-500 font-semibold">Constante</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <input class="fondo_verde cursor-pointer text-white uppercase font-bold px-8 py-2 rounded-2xl mt-6"
-                    type="submit" value="mostrar clasificacion">
+        </div>
+    </section>
+
+    <!-- SECCION TOP APRENDICES POR FICHA -->
+    <section id="ranking" class="py-16 px-6 sm:px-12 bg-[#f5f5f5]">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-10">
+                <span class="inline-block px-4 py-1 bg-green-100 text-green-800 rounded-full text-sm font-bold mb-3">⭐
+                    Destacados</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 fuente_titulo">Mejores Aprendices por
+                    Programa</h2>
+                <p class="text-gray-500 mt-2 text-lg">Los aprendices con mayor puntaje en cada ficha de formación</p>
             </div>
-            {%if usuario %}
-            <p class="text-xs mt-10 capitalize">ir al panel <a href="{{url_for('panel')}}"
-                    class="underline italic ml-1">
-                    clic aqui</a></p>
-            {%else%}
-            <p class="text-xs mt-10 capitalize">¿eres instructor? inicia sesion <a href="{{url_for('login')}}"
-                    class="underline italic ml-1">
-                    clic aqui</a></p>
-            {%endif%}
 
-        </form>
+            <!-- Carrusel -->
+            <div class="relative group">
+                <!-- Botones de navegación -->
+                <button id="carrusel-prev"
+                    class="hidden sm:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center bg-white border border-gray-200 rounded-full shadow-lg hover:bg-green-50 hover:scale-110 transition-all">
+                    <svg class="w-6 h-6 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                        </path>
+                    </svg>
+                </button>
+                <button id="carrusel-next"
+                    class="hidden sm:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 items-center justify-center bg-white border border-gray-200 rounded-full shadow-lg hover:bg-green-50 hover:scale-110 transition-all">
+                    <svg class="w-6 h-6 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
 
-    </div>
+                <!-- Cards container -->
+                <div id="carrusel-container"
+                    class="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory py-8 px-4 sm:px-8 justify-start items-center"
+                    style="scrollbar-width: none;">
+                    {% for item in top_aprendices %}
+                    <div
+                        class="carousel-card transition-all duration-500 ease-out transform min-w-[85vw] sm:min-w-[360px] lg:min-w-[calc(33.333%-1rem)] flex-shrink-0 snap-center cursor-pointer">
+                        <a href="{{url_for('info_aprendiz', codigo=item.di)}}"
+                            class="block outline-none rounded-2xl h-full">
+                            <div
+                                class="fondo_secundario p-6 rounded-2xl shadow-md hover:shadow-xl border border-gray-100 bg-white h-full flex flex-col justify-between">
+                                <div>
+                                    <!-- Header de la card -->
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-2xl">🏆</span>
+                                            <span class="text-xs font-bold uppercase text-gray-400">Top 1</span>
+                                        </div>
+                                        <span
+                                            class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold">
+                                            Ficha {{item.curso_id}}
+                                        </span>
+                                    </div>
+                                    <!-- Info del aprendiz -->
+                                    <div class="flex items-center gap-4 mt-3">
+                                        <div
+                                            class="w-14 h-14 flex-shrink-0 flex items-center justify-center bg-orange-500 rounded-full shadow-md">
+                                            <p class="uppercase font-bold text-2xl text-white">{{item.iniciales}}</p>
+                                        </div>
+                                        <div class="capitalize flex-1 truncate">
+                                            <p class="fuente_titulo text-xl text-gray-800 truncate">{{item.nombre}}</p>
+                                            <p class="text-base font-normal text-gray-500 truncate">{{item.apellidos}}
+                                            </p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-extrabold text-3xl color_principal">{{item.puntos}}<span
+                                                    class="text-xs text-gray-400 ml-1">pts</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Barra de rendimiento -->
+                                <div class="mt-6">
+                                    <div class="flex justify-between px-1 mb-1">
+                                        <p class="text-sm text-gray-500">Rendimiento</p>
+                                        <p class="text-sm font-bold color_principal">{{item.rendimiento}}%</p>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="fondo_verde h-3 rounded-full transition-all duration-700"
+                                            style="width: {{item.rendimiento}}%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPLORAR PROGRAMAS SECTION -->
+    <section id="programas" class="py-16 px-6 sm:px-12 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 fuente_titulo">Explora programas de
+                    formación</h2>
+                <p class="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">Selecciona un programa y consulta el ranking de
+                    aprendices</p>
+            </div>
+
+            <!-- Grid de Programas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for programa in programas %}
+                <div
+                    class="fondo_secundario rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col group hover:-translate-y-2 relative overflow-hidden">
+                    <!-- Decoracion de fondo -->
+                    <div
+                        class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-green-50 rounded-full opacity-50 transition-transform duration-500 group-hover:scale-150">
+                    </div>
+
+                    <!-- Icono -->
+                    <div
+                        class="relative z-10 w-16 h-16 bg-white border border-gray-100 shadow-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-[#2e7d32]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                            </path>
+                        </svg>
+                    </div>
+
+                    <!-- Ficha y Nombre -->
+                    <div class="relative z-10 mb-4">
+                        <span
+                            class="inline-block px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-bold mb-3 tracking-wide border border-green-100">Ficha
+                            {{programa.ficha}}</span>
+                        <h3
+                            class="text-xl font-bold text-gray-800 fuente_titulo uppercase leading-tight group-hover:text-[#2e7d32] transition-colors">
+                            {{programa.nombre_curso}}</h3>
+                    </div>
+
+                    <!-- Parrafo -->
+                    <p class="relative z-10 text-gray-500 text-sm mb-6 flex-grow leading-relaxed">Lorem ipsum dolor sit
+                        amet, consectetur adipiscing elit. Aliquam at erat in purus viverra dignissim. Vestibulum ut
+                        dolor ex.</p>
+
+                    <!-- Info Aprendices y Boton -->
+                    <div class="relative z-10 mt-auto pt-6 border-t border-gray-100 flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <div class="bg-gray-50 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="leading-tight">
+                                <span class="block font-bold text-lg text-gray-800">{{programa.total_aprendices}}</span>
+                                <span class="block text-xs text-gray-400 font-semibold uppercase">Aprendices</span>
+                            </div>
+                        </div>
+
+                        <form action="/ranking" method="POST" class="m-0 p-0">
+                            <input type="hidden" name="ficha" value="{{ programa.ficha }}">
+                            <button type="submit"
+                                class="flex items-center gap-1 bg-[#2e7d32] text-white hover:bg-green-800 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md hover:shadow-lg">
+                                Ver ranking
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- CÓMO FUNCIONA EL RANKING SECTION -->
+    <section class="py-16 px-6 sm:px-12 bg-white border-t border-gray-100" id="como-funciona">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-800 fuente_titulo">¿Cómo funciona el ranking?
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Flechas conectoras (opcional) -->
+                <div
+                    class="hidden md:block absolute top-1/2 left-1/3 w-1/6 border-t-2 border-dashed border-gray-300 -translate-y-1/2 z-0">
+                </div>
+                <div
+                    class="hidden md:block absolute top-1/2 left-2/3 w-1/6 border-t-2 border-dashed border-gray-300 -translate-y-1/2 z-0">
+                </div>
+
+                <!-- Card 1 -->
+                <div
+                    class="fondo_secundario rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center relative z-10 bg-white hover:shadow-md transition-shadow">
+                    <div
+                        class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4 text-[#2e7d32]">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <span
+                        class="absolute -bottom-3 bg-[#2e7d32] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-4 border-white shadow-sm">1</span>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Participación en clase</h3>
+                    <p class="text-gray-500 text-sm">Participar en clase activamente en las formaciones suma puntos.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div
+                    class="fondo_secundario rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center relative z-10 bg-white hover:shadow-md transition-shadow">
+                    <div
+                        class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4 text-[#2e7d32]">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                            </path>
+                        </svg>
+                    </div>
+                    <span
+                        class="absolute -bottom-3 bg-[#2e7d32] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-4 border-white shadow-sm">2</span>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Comportamiento</h3>
+                    <p class="text-gray-500 text-sm">El comportamiento, puntualidad y porte de uniforme suma o resta
+                        puntos.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div
+                    class="fondo_secundario rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center relative z-10 bg-white hover:shadow-md transition-shadow">
+                    <div
+                        class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4 text-[#2e7d32]">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                            </path>
+                        </svg>
+                    </div>
+                    <span
+                        class="absolute -bottom-3 bg-[#2e7d32] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm border-4 border-white shadow-sm">3</span>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Actualización constante</h3>
+                    <p class="text-gray-500 text-sm">El ranking se actualiza constantemente para reflejar desempeño
+                        real.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEGUIMIENTO Y TRANSPARENCIA SECTION -->
+    <section class="py-16 px-6 sm:px-12 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-6xl mx-auto">
+            <div
+                class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100">
+
+                <!-- Columna 1: Imagen -->
+                <div class="w-full h-64 lg:h-auto min-h-[250px] rounded-2xl overflow-hidden relative">
+                    <img src="{{ url_for('static', filename='img/foto.png') }}" alt="Seguimiento y transparencia"
+                        class="absolute inset-0 w-full h-full object-cover">
+                </div>
+
+                <!-- Columna 2: Texto y CTA -->
+                <div class="flex flex-col items-start justify-center px-4 lg:px-6">
+                    <h2 class="text-3xl font-extrabold text-gray-800 fuente_titulo mb-4 leading-tight">Seguimiento y
+                        transparencia para las familias</h2>
+                    <p class="text-gray-600 text-base mb-8">Permite conocer el desempeño y evolución de los aprendices
+                        de forma clara, confiable y accesible.</p>
+                    <a href="#buscador"
+                        class="flex items-center gap-2 bg-[#2e7d32] hover:bg-green-800 text-white px-6 py-3 rounded-xl font-bold transition shadow-md">
+                        Consultar aprendiz
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Columna 3: Checklist -->
+                <div class="bg-green-50 rounded-2xl p-6 lg:p-8 flex flex-col justify-center">
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-[#2e7d32] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700 font-medium text-sm sm:text-base">Información pública y
+                                confiable</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-[#2e7d32] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700 font-medium text-sm sm:text-base">Fácil acceso y consulta</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-[#2e7d32] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700 font-medium text-sm sm:text-base">Promueve la motivación</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-6 h-6 text-[#2e7d32] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span class="text-gray-700 font-medium text-sm sm:text-base">Acompañamiento en el proceso
+                                formativo</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BENEFICIOS DEL SISTEMA SECTION -->
+    <section class="py-16 px-6 sm:px-12 bg-white">
+        <div
+            class="max-w-6xl mx-auto border border-gray-100 rounded-3xl p-8 sm:p-12 shadow-sm relative overflow-hidden">
+            <div class="text-center mb-10">
+                <h2
+                    class="text-2xl sm:text-3xl font-extrabold text-gray-800 fuente_titulo bg-white px-4 inline-block relative z-10">
+                    Beneficios del sistema</h2>
+                <div class="absolute top-16 left-0 w-full border-t border-gray-200 z-0 hidden sm:block"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+                <!-- Beneficio 1: Motivación -->
+                <div class="flex items-center gap-4 group">
+                    <div
+                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-lg">Motivación</h4>
+                        <p class="text-xs text-gray-500 mt-1 leading-snug">Inspira a los aprendices a superarse cada
+                            día.</p>
+                    </div>
+                </div>
+
+                <!-- Beneficio 2: Disciplina -->
+                <div class="flex items-center gap-4 group">
+                    <div
+                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-lg">Disciplina</h4>
+                        <p class="text-xs text-gray-500 mt-1 leading-snug">Fomenta hábitos y comportamientos positivos.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Beneficio 3: Seguimiento -->
+                <div class="flex items-center gap-4 group">
+                    <div
+                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-lg">Seguimiento</h4>
+                        <p class="text-xs text-gray-500 mt-1 leading-snug">Permite un seguimiento claro y en tiempo
+                            real.</p>
+                    </div>
+                </div>
+
+                <!-- Beneficio 4: Reconocimiento -->
+                <div class="flex items-center gap-4 group">
+                    <div
+                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-lg">Reconocimiento</h4>
+                        <p class="text-xs text-gray-500 mt-1 leading-snug">Destaca el esfuerzo y los logros de los
+                            aprendices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- BUSCAR APRENDIZ SECTION -->
+    <section class="py-8 px-6 sm:px-12 bg-white pb-16" id="buscador">
+        <div
+            class="max-w-6xl mx-auto bg-[#eaf2ea] rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+            <!-- Left Side -->
+            <div class="flex items-center gap-5 w-full md:w-1/2">
+                <div
+                    class="w-20 h-20 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm border border-gray-100">
+                    <svg class="w-10 h-10 text-[#2e7d32]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-extrabold text-gray-900 tracking-tight leading-tight">Busca un aprendiz
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1 font-medium">Encuentra el desempeño y posición en el ranking.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Side (Form) -->
+            <div class="w-full flex justify-end">
+                <form action="/aprendiz" method="POST"
+                    class="w-full xl:w-5/6 flex items-stretch h-16 shadow-sm rounded-xl">
+                    <div class="relative flex-grow h-full">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none h-full">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" name="buscar_aprendiz" placeholder="Buscar aprendiz por nombre"
+                            class="w-full h-full pl-11 pr-4 rounded-l-xl border-none focus:ring-2 focus:ring-inset focus:ring-[#2e7d32] text-gray-700 bg-white">
+                    </div>
+                    <button type="submit"
+                        class="bg-[#2e7d32] hover:bg-green-800 text-white font-bold px-10 rounded-r-xl transition-colors whitespace-nowrap h-full text-lg">
+                        Buscar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- BANNER RANKING COMPLETO -->
+    <section class="py-12 px-6 sm:px-12 bg-white">
+        <div
+            class="max-w-6xl mx-auto bg-[#2e7d32] rounded-3xl p-8 sm:p-12 shadow-lg flex flex-col md:flex-row items-center justify-between gap-8 text-white relative overflow-hidden">
+            <!-- Background Decoration -->
+            <div
+                class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-10 rounded-full blur-2xl pointer-events-none">
+            </div>
+            <div
+                class="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-white opacity-10 rounded-full blur-xl pointer-events-none">
+            </div>
+
+            <div class="relative z-10 w-full md:w-2/3">
+                <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight mb-3">Consulta el ranking
+                    completo y conoce el desempeño de todos los aprendices.</h3>
+                <p class="text-green-100 font-medium text-sm sm:text-base opacity-90">Información pública, actualizada y
+                    transparente.</p>
+            </div>
+
+            <div class="relative z-10 w-full md:w-auto flex justify-end">
+                <button type="button" onclick="document.getElementById('modal-ranking').classList.remove('hidden')"
+                    class="bg-white text-[#2e7d32] hover:bg-green-50 font-extrabold py-4 px-8 rounded-xl transition-colors shadow-md whitespace-nowrap text-lg flex items-center gap-2 cursor-pointer">
+                    Ver ranking completo
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
     {% endif%}
     <div class="md:grid grid-cols-3 gap-10 mt-16 p-5">
         {% for item in aprendices %}
@@ -94,5 +625,71 @@
         {% endfor%}
     </div>
 
+    <!-- Enlace al script del carrusel -->
+    <script src="{{ url_for('static', filename='js/carrusel.js') }}"></script>
+
+    <!-- Ventana Modal de Selección de Curso -->
+    <div id="modal-ranking" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true"
+                onclick="document.getElementById('modal-ranking').classList.add('hidden')"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal panel con z-10 para sobreponerse al fondo fijo -->
+            <div
+                class="relative z-10 inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-100">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-xl leading-6 font-bold text-gray-900 fuente_titulo" id="modal-title">
+                                Selecciona un Curso
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 mb-4">Elige la ficha de formación para visualizar el
+                                    ranking de sus aprendices.</p>
+
+                                <form id="form-filtro-ranking" action="/ranking" method="POST" class="w-full">
+                                    <div class="mb-4 text-left">
+                                        <label for="ficha" class="block text-sm font-bold text-gray-700 mb-2">Programa
+                                            de Formación</label>
+                                        <select id="ficha" name="ficha" required
+                                            class="block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-xl border bg-gray-50 text-gray-800 font-medium cursor-pointer">
+                                            <option value="" disabled selected>Seleccione un programa...</option>
+                                            {% for programa in programas %}
+                                            <option value="{{ programa.ficha }}">{{ programa.nombre_curso }} (Ficha: {{
+                                                programa.ficha }})</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse gap-3">
+                                        <button type="submit"
+                                            class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-4 py-2 bg-[#2e7d32] text-base font-bold text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:w-auto sm:text-sm transition-colors cursor-pointer">
+                                            Ver Ranking
+                                        </button>
+                                        <button type="button"
+                                            onclick="document.getElementById('modal-ranking').classList.add('hidden')"
+                                            class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-bold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:w-auto sm:text-sm transition-colors cursor-pointer">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

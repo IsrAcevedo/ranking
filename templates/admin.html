@@ -78,7 +78,7 @@
                 <td>
                     {% set edad = fecha_actual.year - aprendiz.fecha_nac.year
                     - ((fecha_actual.month, fecha_actual.day) < (aprendiz.fecha_nac.month, aprendiz.fecha_nac.day)) %}
-                        <input class="w-full" name="puntos" type="text" value="{{edad}}" class="text-center" readonly>
+                        <input name="edad" type="text" value="{{edad}}" class="text-center" readonly>
                 </td>
                 <td>
                     <div class="flex gap-3">
