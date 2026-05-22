@@ -13,6 +13,12 @@
             <p class="text-xs font-bold">fecha de observacion: <br> <span
                     class="font-normal">{{observacion.fecha}}</span></p>
         </div>
+        {% if usuario %}
+        <div class="flex justify-end gap-2 p-2 border-t border-gray-100 mt-2">
+            <a href="{{ url_for('editar_observacion', id_observacion=observacion.id_observacion) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-4 rounded-lg text-xs uppercase transition-all duration-300">Modificar</a>
+            <a href="{{ url_for('eliminar_observacion', id_observacion=observacion.id_observacion) }}" onclick="return confirm('¿Está seguro de que desea eliminar esta observación?');" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-4 rounded-lg text-xs uppercase transition-all duration-300">Eliminar</a>
+        </div>
+        {% endif %}
     </div>
     {%endfor%}
 

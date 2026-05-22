@@ -176,7 +176,7 @@ def calificar():
 @app.route('/info_aprendiz/<codigo>')
 def info_aprendiz(codigo):
   documento = codigo
-  query = ('select tipo,descripcion,fecha,estado from observaciones where id_aprendiz = %s ORDER BY fecha DESC')
+  query = ('select id_observacion, tipo,descripcion,fecha,estado from observaciones where id_aprendiz = %s ORDER BY fecha DESC')
   parametros=(documento,)
   observaciones = consulta(query,parametros)
   return render_template('aprendiz.html', observaciones=observaciones, codigo=codigo )   
@@ -207,8 +207,69 @@ def guardar_observacion():
       return redirect(url_for('admin',ficha=ficha))
     except Exception as e:
       return render_template('admin.html',respuesta= f'datos no insertados \n {e}')
-   
   return render_template('calificar.html')   
+
+@app.route('/eliminar_observacion/<id_observacion>')
+@login_required
+def eliminar_observacion(id_observacion):
+  query_get = 'select id_aprendiz from observaciones where id_observacion = %s'
+  resultado = consulta(query_get, (id_observacion,))
+  if not resultado:
+    return redirect(url_for('panel'))
+  
+  codigo = resultado[0]['id_aprendiz']
+  query_del = 'delete from observaciones where id_observacion = %s'
+  try:
+    insertar(query_del, (id_observacion,))
+  except Exception as e:
+    pass
+  
+  return redirect(url_for('info_aprendiz', codigo=codigo))
+
+@app.route('/editar_observacion/<id_observacion>', methods=['GET', 'POST'])
+@login_required
+def editar_observacion(id_observacion):
+  if request.method == 'POST':
+    tipo = request.form.get('tipo')
+    obs = request.form.get('observacion')
+    estado = request.form.get('estado')
+    
+    query_get = 'select id_aprendiz from observaciones where id_observacion = %s'
+    resultado = consulta(query_get, (id_observacion,))
+    if not resultado:
+      return redirect(url_for('panel'))
+    codigo = resultado[0]['id_aprendiz']
+    
+    query_upd = 'update observaciones set tipo=%s, descripcion=%s, estado=%s where id_observacion=%s'
+    parametros = (tipo, obs, estado, id_observacion)
+    try:
+      insertar(query_upd, parametros)
+      return redirect(url_for('info_aprendiz', codigo=codigo))
+    except Exception as e:
+      ficha = request.form.get('ficha')
+      observacion = {
+        'id_observacion': id_observacion,
+        'tipo': tipo,
+        'descripcion': obs,
+        'estado': estado,
+        'id_aprendiz': codigo
+      }
+      return render_template('calificar.html', codigo=codigo, calificacion=None, ficha=ficha, observacion=observacion, editar_obs=True, error=f'No se pudo editar: {e}')
+  else:
+    query_get = 'select id_observacion, id_aprendiz, tipo, descripcion, estado from observaciones where id_observacion = %s'
+    resultado = consulta(query_get, (id_observacion,))
+    if not resultado:
+      return redirect(url_for('panel'))
+    
+    observacion = resultado[0]
+    codigo = observacion['id_aprendiz']
+    
+    query_aprendiz = 'select curso_id from aprendices where di = %s'
+    res_aprendiz = consulta(query_aprendiz, (codigo,))
+    ficha = res_aprendiz[0]['curso_id'] if res_aprendiz else None
+    
+    return render_template('calificar.html', codigo=codigo, calificacion=None, ficha=ficha, observacion=observacion, editar_obs=True)
+
 
 
 @app.route('/registrar_clase', methods=['GET','POST'])
@@ -352,3 +413,4 @@ def cerrar_sesion():
   return render_template('login.html', error=error)
 
 
+app.run(debug=True)

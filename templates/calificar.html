@@ -1,45 +1,50 @@
 {% extends "base.html" %}
 {% block content %}
 {%if observacion is not none %}
-<div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-10 rounded-2xl p-8 h-96 ">
-    <form action="/guardar_observacion" method="POST">
+<div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-10 rounded-2xl p-8 h-[450px]">
+    <form action="{% if editar_obs %}{{ url_for('editar_observacion', id_observacion=observacion.id_observacion) }}{% else %}/guardar_observacion{% endif %}" method="POST">
         <fieldset>
-            <legend class="capitalize font-extrabold text-center mb-5">agregar observacion al aprendiz </legend>
+            <legend class="capitalize font-extrabold text-center mb-5">{% if editar_obs %}modificar observacion del aprendiz{% else %}agregar observacion al aprendiz{% endif %}</legend>
             <input type="hidden" name="ficha" value="{{ ficha }}">
             <input name="documento" type="text" value="{{codigo}}" hidden>
             <div>
                 <label for="tipo" class="font-semibold">Tipo de observacion:</label>
                 <select name="tipo" id="tipo" required class=" font-extralight outline-none">
                     <option value="">seleccione</option>
-                    <option value="Inasistencia">Inasistencia</option>
-                    <option value="Llegada Tarde">Llegada Tarde</option>
-                    <option value="Tarea Pendiente">Tarea Pendiente</option>
-                    <option value="Otro">Otro</option>
+                    <option value="Inasistencia" {% if editar_obs and observacion.tipo == 'Inasistencia' %}selected{% endif %}>Inasistencia</option>
+                    <option value="Llegada Tarde" {% if editar_obs and observacion.tipo == 'Llegada Tarde' %}selected{% endif %}>Llegada Tarde</option>
+                    <option value="Tarea Pendiente" {% if editar_obs and observacion.tipo == 'Tarea Pendiente' %}selected{% endif %}>Tarea Pendiente</option>
+                    <option value="Otro" {% if editar_obs and observacion.tipo == 'Otro' %}selected{% endif %}>Otro</option>
                 </select>
             </div>
             <div class="flex flex-col my-3 ">
                 <label for="observacion" class="font-semibold">Observacion:</label>
                 <textarea name="observacion" id="observacion" rows="5"
-                    class="outline-none border-2 p-2 font-extralight"></textarea>
+                    class="outline-none border-2 p-2 font-extralight">{% if editar_obs %}{{observacion.descripcion}}{% endif %}</textarea>
             </div>
             <div>
                 <label for="estado" class="font-semibold">Estado:</label>
                 <select name="estado" id="estado" required class=" font-extralight outline-none">
                     <option value="">seleccione</option>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Resuelto">Resuelto</option>
-                    <option value="Registrado">Registrado</option>
+                    <option value="Pendiente" {% if editar_obs and observacion.estado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                    <option value="Resuelto" {% if editar_obs and observacion.estado == 'Resuelto' %}selected{% endif %}>Resuelto</option>
+                    <option value="Registrado" {% if editar_obs and observacion.estado == 'Registrado' %}selected{% endif %}>Registrado</option>
                 </select>
             </div>
 
         </fieldset>
-        <div class="mt-5 flex justify-center">
+        <div class="mt-5 flex justify-center gap-4">
             <input type="submit" value="Guardar"
-                class="fondo_verde uppercase sm:px-5 py-1 sm:w-auto w-5/6 rounded-xl text-white font-bold cursor-pointer">
+                class="fondo_verde uppercase sm:px-5 py-1.5 sm:w-auto w-1/2 rounded-xl text-white font-bold cursor-pointer">
+            <a href="{% if editar_obs %}{{ url_for('info_aprendiz', codigo=codigo) }}{% else %}{{ url_for('admin', ficha=ficha) }}{% endif %}"
+                class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1.5 px-5 rounded-xl uppercase text-center flex items-center justify-center w-1/2 sm:w-auto">Cancelar</a>
         </div>
     </form>
 
     {{respuesta}}
+    {% if error %}
+    <p class="text-red-500 text-center mt-2">{{ error }}</p>
+    {% endif %}
 </div>
 {%endif%}
 
