@@ -413,4 +413,3 @@ def cerrar_sesion():
   return render_template('login.html', error=error)
 
 
-app.run(debug=True)
