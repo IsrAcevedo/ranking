@@ -4,6 +4,7 @@ from decoradores import login_required
 from werkzeug.security import check_password_hash
 from datetime import date
 import os
+import mysql.connector
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -156,7 +157,9 @@ def admin():
 @login_required
 def agregar_calificacion(codigo,puntaje):
   ficha = request.args.get('ficha')
-  return render_template('calificar.html', codigo=codigo, observacion=None, puntaje=puntaje, ficha=ficha )  
+  query_clases = 'SELECT id_clase, titulo, fecha FROM clases WHERE curso_id = %s ORDER BY fecha DESC'
+  clases = consulta(query_clases, (ficha,))
+  return render_template('calificar.html', codigo=codigo, observacion=None, puntaje=puntaje, ficha=ficha, clases=clases )  
     
 @app.route('/calificando',methods=['GET','POST'])
 @login_required
@@ -166,7 +169,33 @@ def calificar():
     ficha = request.form.get('ficha')
     acumulado=int(request.form.get('puntos'))
     cal= int(request.form.get('calificacion'))
+    id_clase = request.form.get('id_clase')
     puntos=acumulado+cal
+    
+    # Obtener el `id` auto-incremental del aprendiz basado en su documento `di`
+    query_get_id = 'SELECT id FROM aprendices WHERE di = %s'
+    res_id = consulta(query_get_id, (doc,))
+    if not res_id:
+        return render_template('calificar.html', error="Aprendiz no encontrado.", codigo=doc, observacion=None, puntaje=acumulado, ficha=ficha, clases=[], calificacion=True)
+    
+    id_auto = res_id[0]['id']
+    
+    query_cal = 'insert into calificaciones(id_aprendiz, id_clase, nota) values(%s, %s, %s)'
+    parametros_cal = (id_auto, id_clase, cal)
+    try:
+        insertar(query_cal, parametros_cal)
+    except mysql.connector.Error as err:
+        query_clases = 'SELECT id_clase, titulo, fecha FROM clases WHERE curso_id = %s ORDER BY fecha DESC'
+        clases = consulta(query_clases, (ficha,))
+        if err.errno == 1062:
+            return render_template('calificar.html', error="Este aprendiz ya fue calificado para la actividad seleccionada.", codigo=doc, observacion=None, puntaje=acumulado, ficha=ficha, clases=clases, calificacion=True)
+        else:
+            return render_template('calificar.html', error=f"Error en BD: {err}", codigo=doc, observacion=None, puntaje=acumulado, ficha=ficha, clases=clases, calificacion=True)
+    except Exception as e:
+        query_clases = 'SELECT id_clase, titulo, fecha FROM clases WHERE curso_id = %s ORDER BY fecha DESC'
+        clases = consulta(query_clases, (ficha,))
+        return render_template('calificar.html', error=f"Ocurrió un error inesperado: {e}", codigo=doc, observacion=None, puntaje=acumulado, ficha=ficha, clases=clases, calificacion=True)
+
     query=('update aprendices set puntos = %s where di=%s')
     parametros=(puntos,doc)
     insertar(query,parametros)
