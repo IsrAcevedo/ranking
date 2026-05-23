@@ -205,12 +205,85 @@ def calificar():
 @app.route('/info_aprendiz/<codigo>')
 def info_aprendiz(codigo):
   documento = codigo
-  query = ('select id_observacion, tipo,descripcion,fecha,estado from observaciones where id_aprendiz = %s ORDER BY fecha DESC')
-  parametros=(documento,)
-  observaciones = consulta(query,parametros)
-  return render_template('aprendiz.html', observaciones=observaciones, codigo=codigo )   
+  query_obs = ('select id_observacion, tipo,descripcion,fecha,estado from observaciones where id_aprendiz = %s ORDER BY fecha DESC')
+  observaciones = consulta(query_obs, (documento,))
+
+  # Obtener el id interno del aprendiz para buscar sus calificaciones
+  query_id = 'SELECT id FROM aprendices WHERE di = %s'
+  res_id = consulta(query_id, (documento,))
+  calificaciones = []
+  if res_id:
+    id_aprendiz = res_id[0]['id']
+    query_cal = '''
+      SELECT c.id_calificacion, c.nota, c.fecha_registro, cl.titulo, cl.fecha AS fecha_clase
+      FROM calificaciones c
+      INNER JOIN clases cl ON c.id_clase = cl.id_clase
+      WHERE c.id_aprendiz = %s
+      ORDER BY c.fecha_registro DESC
+    '''
+    calificaciones = consulta(query_cal, (id_aprendiz,))
+
+  return render_template('aprendiz.html', observaciones=observaciones, calificaciones=calificaciones, codigo=codigo)
 
 
+@app.route('/editar_calificacion/<id_calificacion>', methods=['GET', 'POST'])
+@login_required
+def editar_calificacion(id_calificacion):
+  if request.method == 'POST':
+    nueva_nota = float(request.form.get('calificacion'))
+    codigo = request.form.get('documento')
+    ficha = request.form.get('ficha')
+
+    # Obtener la nota anterior para calcular la diferencia
+    query_old = 'SELECT nota, id_aprendiz FROM calificaciones WHERE id_calificacion = %s'
+    res_old = consulta(query_old, (id_calificacion,))
+    if not res_old:
+      return redirect(url_for('panel'))
+
+    nota_anterior = float(res_old[0]['nota'])
+    id_aprendiz_interno = res_old[0]['id_aprendiz']
+    diferencia = nueva_nota - nota_anterior
+
+    # Actualizar la nota en la tabla calificaciones
+    query_upd_cal = 'UPDATE calificaciones SET nota = %s WHERE id_calificacion = %s'
+    insertar(query_upd_cal, (nueva_nota, id_calificacion))
+
+    # Ajustar los puntos acumulados del aprendiz sumando la diferencia
+    query_upd_pts = 'UPDATE aprendices SET puntos = puntos + %s WHERE id = %s'
+    insertar(query_upd_pts, (diferencia, id_aprendiz_interno))
+
+    return redirect(url_for('info_aprendiz', codigo=codigo))
+  else:
+    # GET: obtener la calificacion actual y la clase asociada
+    query_get = '''
+      SELECT c.id_calificacion, c.nota, c.id_aprendiz,
+             cl.titulo AS titulo_clase, cl.fecha AS fecha_clase,
+             a.di
+      FROM calificaciones c
+      INNER JOIN clases cl ON c.id_clase = cl.id_clase
+      INNER JOIN aprendices a ON c.id_aprendiz = a.id
+      WHERE c.id_calificacion = %s
+    '''
+    res = consulta(query_get, (id_calificacion,))
+    if not res:
+      return redirect(url_for('panel'))
+
+    cal = res[0]
+    codigo = cal['di']
+    ficha_res = consulta('SELECT curso_id FROM aprendices WHERE di = %s', (codigo,))
+    ficha = ficha_res[0]['curso_id'] if ficha_res else None
+
+    return render_template(
+      'calificar.html',
+      codigo=codigo,
+      observacion=None,
+      calificacion=True,
+      editar_cal=True,
+      cal_actual=cal,
+      puntaje=None,
+      ficha=ficha,
+      clases=[]
+    )
 
 #ruta para agregar observacion al aprendiz
 @app.route('/agregar_observacion/<codigo>')

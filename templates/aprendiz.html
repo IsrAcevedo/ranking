@@ -21,7 +21,29 @@
         {% endif %}
     </div>
     {%endfor%}
-
 </div>
 
-{% endblock %}
+{% if calificaciones %}
+<div class="sm:w-2/3 m-auto fondo_secundario sm:p-8 p-3 mt-5 mb-10">
+    <h3 class="text-center uppercase font-black mb-3">historial de calificaciones</h3>
+    {% for cal in calificaciones %}
+    <div class="p-2 mb-4 w-full" style="box-shadow: 6px 6px 14px 5px rgba(165,191,168,0.69)">
+        <div class="flex justify-between items-center p-2">
+            <div>
+                <p class="font-bold text-sm">{{ cal.titulo }}</p>
+                <p class="text-xs text-gray-500">Clase del {{ cal.fecha_clase }}</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-2xl font-black fondo_verde text-white rounded-lg px-3 py-1">{{ cal.nota }}</span>
+                {% if usuario %}
+                <a href="{{ url_for('editar_calificacion', id_calificacion=cal.id_calificacion) }}"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-4 rounded-lg text-xs uppercase transition-all duration-300">Modificar</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

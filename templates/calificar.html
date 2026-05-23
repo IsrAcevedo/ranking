@@ -50,32 +50,43 @@
 
 {%if calificacion is not none %}
 <div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-10 rounded-2xl p-8 h-auto ">
-    <form action="{{ url_for('calificar') }}" method="POST" class="h-full">
+    <form action="{% if editar_cal %}{{ url_for('editar_calificacion', id_calificacion=cal_actual.id_calificacion) }}{% else %}{{ url_for('calificar') }}{% endif %}" method="POST" class="h-full">
         <div class="flex flex-col items-center justify-between h-full gap-4">
+            <h3 class="capitalize font-extrabold text-center">{% if editar_cal %}modificar calificación{% else %}agregar calificación{% endif %}</h3>
             <input name="documento" type="text" value="{{codigo}}" hidden>
             <input type="hidden" name="ficha" value="{{ ficha }}">
-            
-            <label class="font-bold">Actividad / Clase</label>
+
+            <label class="font-bold w-full">Actividad / Clase</label>
+            {% if editar_cal %}
+            {# En modo edición la clase se muestra bloqueada para no violar la restricción UNIQUE #}
+            <p class="w-full border-2 p-2 rounded-lg bg-gray-100 text-gray-700">
+                {{ cal_actual.titulo_clase }} — {{ cal_actual.fecha_clase }}
+            </p>
+            {% else %}
             <select name="id_clase" required class="w-full border-2 p-2 rounded-lg font-extralight outline-none">
                 <option value="">Seleccione una clase...</option>
                 {% for clase in clases %}
                 <option value="{{ clase.id_clase }}">{{ clase.titulo }} - {{ clase.fecha }}</option>
                 {% endfor %}
             </select>
+            {% endif %}
 
+            {% if not editar_cal %}
             <label class="font-bold">Acumulado</label>
             <input name="puntos" type="text" value="{{puntaje}}" readonly
                 class="w-1/2 m-auto text-center outline-none text-2xl font-bold bg-red-600 text-white rounded-lg">
-            
+            {% endif %}
+
             <label class="font-bold">Calificación</label>
             <input name="calificacion" type="number" placeholder="?" required
+                value="{% if editar_cal %}{{ cal_actual.nota }}{% endif %}"
                 class="w-1/2 m-auto text-center py-1 text-3xl font-bold px-2 outline-none bg-blue-700 text-white rounded-lg"
                 min="0" max="20" step="0.01">
-            
+
             <div class="flex justify-center gap-4 w-full mt-5">
                 <input type="submit" value="Guardar"
                     class="fondo_verde uppercase sm:px-5 py-2 w-1/2 rounded-xl text-white font-bold cursor-pointer transition-colors">
-                <a href="{{ url_for('admin', ficha=ficha) }}"
+                <a href="{% if editar_cal %}{{ url_for('info_aprendiz', codigo=codigo) }}{% else %}{{ url_for('admin', ficha=ficha) }}{% endif %}"
                     class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-5 rounded-xl uppercase text-center flex items-center justify-center w-1/2 transition-colors">Cancelar</a>
             </div>
         </div>
