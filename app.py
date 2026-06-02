@@ -387,10 +387,12 @@ def registrar_clase():
     print(descripcion)
     query=('insert into clases(curso_id,titulo,descripcion,fecha) values(%s,%s,%s,%s)')
     parametros=(ficha,titulo,descripcion,fecha)
+    query_update = ('update cursos set cantidad_clases = cantidad_clases + 1 WHERE ficha = %s')
+    parametros_update=(ficha,)
     
     try:
       insertar(query,parametros)
-  
+      insertar(query_update,parametros_update)
       return redirect(url_for('admin',ficha=ficha))
     except Exception as e:
       return render_template('admin.html',ficha=ficha, error= f'clases no registrada \n {e}')
@@ -515,3 +517,5 @@ def cerrar_sesion():
   return render_template('login.html', error=error)
 
 
+if __name__ == '__main__':
+  app.run(debug=True)
