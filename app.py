@@ -205,9 +205,8 @@ def calificar():
 @app.route('/info_aprendiz/<codigo>')
 def info_aprendiz(codigo):
   documento = codigo
-  query_obs = ('select id_observacion, tipo,descripcion,fecha,estado from observaciones where id_aprendiz = %s ORDER BY fecha DESC')
+  query_obs = ('select id_observacion, tipo,descripcion,DATE_SUB(fecha, INTERVAL 5 HOUR) AS fecha,estado from observaciones where id_aprendiz = %s ORDER BY fecha DESC')
   observaciones = consulta(query_obs, (documento,))
-
   # Obtener el id interno del aprendiz para buscar sus calificaciones
   query_id = 'SELECT id FROM aprendices WHERE di = %s'
   res_id = consulta(query_id, (documento,))
