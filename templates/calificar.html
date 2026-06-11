@@ -2,35 +2,51 @@
 {% block content %}
 {%if observacion is not none %}
 <div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-10 rounded-2xl p-8 h-[450px]">
-    <form action="{% if editar_obs %}{{ url_for('editar_observacion', id_observacion=observacion.id_observacion) }}{% else %}/guardar_observacion{% endif %}" method="POST">
+    <form
+        action="{% if editar_obs %}{{ url_for('editar_observacion', id_observacion=observacion.id_observacion) }}{% else %}/guardar_observacion{% endif %}"
+        method="POST">
         <fieldset>
-            <legend class="capitalize font-extrabold text-center mb-5">{% if editar_obs %}modificar observacion del aprendiz{% else %}agregar observacion al aprendiz{% endif %}</legend>
+            <legend class="capitalize font-extrabold text-center mb-5">{% if editar_obs %}modificar observacion del
+                aprendiz{% else %}agregar observacion al aprendiz{% endif %}</legend>
             <input type="hidden" name="ficha" value="{{ ficha }}">
             <input name="documento" type="text" value="{{codigo}}" hidden>
-            <div>
-                <label for="tipo" class="font-semibold">Tipo de observacion:</label>
-                <select name="tipo" id="tipo" required class=" font-extralight outline-none">
-                    <option value="">seleccione</option>
-                    <option value="Inasistencia" {% if editar_obs and observacion.tipo == 'Inasistencia' %}selected{% endif %}>Inasistencia</option>
-                    <option value="Llegada Tarde" {% if editar_obs and observacion.tipo == 'Llegada Tarde' %}selected{% endif %}>Llegada Tarde</option>
-                    <option value="Tarea Pendiente" {% if editar_obs and observacion.tipo == 'Tarea Pendiente' %}selected{% endif %}>Tarea Pendiente</option>
-                    <option value="Otro" {% if editar_obs and observacion.tipo == 'Otro' %}selected{% endif %}>Otro</option>
-                </select>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                <div class="flex flex-col">
+                    <label for="tipo" class="font-semibold ">Tipo de observacion:</label>
+                    <select name="tipo" id="tipo" required
+                        class=" border-2 border-gray-200 rounded-lg p-2 outline-none font-light focus:border-green-400 transition-colors">
+                        <option value="">seleccione</option>
+                        <option value="Inasistencia" {% if editar_obs and observacion.tipo=='Inasistencia' %}selected{%
+                            endif %}>Inasistencia</option>
+                        <option value="Llegada Tarde" {% if editar_obs and observacion.tipo=='Llegada Tarde'
+                            %}selected{% endif %}>Llegada Tarde</option>
+                        <option value="Tarea Pendiente" {% if editar_obs and observacion.tipo=='Tarea Pendiente'
+                            %}selected{% endif %}>Tarea Pendiente</option>
+                        <option value="Otro" {% if editar_obs and observacion.tipo=='Otro' %}selected{% endif %}>Otro
+                        </option>
+                    </select>
+                </div>
+                <div class="flex flex-col">
+                    <label for="estado" class="font-semibold">Estado:</label>
+                    <select name="estado" id="estado" required
+                        class=" border-2 border-gray-200 rounded-lg p-2 outline-none font-light focus:border-green-600 transition-colors">
+                        <option value="">seleccione</option>
+                        <option value="Pendiente" {% if editar_obs and observacion.estado=='Pendiente' %}selected{%
+                            endif %}>Pendiente</option>
+                        <option value="Resuelto" {% if editar_obs and observacion.estado=='Resuelto' %}selected{% endif
+                            %}>
+                            Resuelto</option>
+                        <option value="Registrado" {% if editar_obs and observacion.estado=='Registrado' %}selected{%
+                            endif %}>Registrado</option>
+                    </select>
+                </div>
             </div>
             <div class="flex flex-col my-3 ">
                 <label for="observacion" class="font-semibold">Observacion:</label>
                 <textarea name="observacion" id="observacion" rows="5"
-                    class="outline-none border-2 p-2 font-extralight">{% if editar_obs %}{{observacion.descripcion}}{% endif %}</textarea>
+                    class="outline-none border-gray-200 border-2 p-2 font-extralight rounded-lg focus:border-green-600">{% if editar_obs %}{{observacion.descripcion}}{% endif %}</textarea>
             </div>
-            <div>
-                <label for="estado" class="font-semibold">Estado:</label>
-                <select name="estado" id="estado" required class=" font-extralight outline-none">
-                    <option value="">seleccione</option>
-                    <option value="Pendiente" {% if editar_obs and observacion.estado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
-                    <option value="Resuelto" {% if editar_obs and observacion.estado == 'Resuelto' %}selected{% endif %}>Resuelto</option>
-                    <option value="Registrado" {% if editar_obs and observacion.estado == 'Registrado' %}selected{% endif %}>Registrado</option>
-                </select>
-            </div>
+
 
         </fieldset>
         <div class="mt-5 flex justify-center gap-4">
@@ -50,9 +66,12 @@
 
 {%if calificacion is not none %}
 <div class="md:w-2/5 w-5/6 mx-auto fondo_secundario mt-10 rounded-2xl p-8 h-auto ">
-    <form action="{% if editar_cal %}{{ url_for('editar_calificacion', id_calificacion=cal_actual.id_calificacion) }}{% else %}{{ url_for('calificar') }}{% endif %}" method="POST" class="h-full">
+    <form
+        action="{% if editar_cal %}{{ url_for('editar_calificacion', id_calificacion=cal_actual.id_calificacion) }}{% else %}{{ url_for('calificar') }}{% endif %}"
+        method="POST" class="h-full">
         <div class="flex flex-col items-center justify-between h-full gap-4">
-            <h3 class="capitalize font-extrabold text-center">{% if editar_cal %}modificar calificación{% else %}agregar calificación{% endif %}</h3>
+            <h3 class="capitalize font-extrabold text-center">{% if editar_cal %}modificar calificación{% else %}agregar
+                calificación{% endif %}</h3>
             <input name="documento" type="text" value="{{codigo}}" hidden>
             <input type="hidden" name="ficha" value="{{ ficha }}">
 

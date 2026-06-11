@@ -37,7 +37,8 @@
                 <p class="text-xs text-gray-500">Clase del {{ cal.fecha_clase }}</p>
             </div>
             <div class="flex items-center gap-4">
-                <span class="text-2xl font-black fondo_verde text-white rounded-lg px-3 py-1">{{ cal.nota }}</span>
+                <span class="text-2xl font-black fondo_verde text-white rounded-lg px-3 py-1">{{ cal.nota|int
+                    }}.pts</span>
                 {% if usuario %}
                 <a href="{{ url_for('editar_calificacion', id_calificacion=cal.id_calificacion) }}"
                     class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1.5 px-4 rounded-lg text-xs uppercase transition-all duration-300">Modificar</a>

@@ -291,6 +291,29 @@ def agregar_observacion(codigo):
   ficha = request.args.get('ficha')
   return render_template('calificar.html', codigo=codigo, calificacion=None, ficha=ficha)   
 
+@app.route('/guardar_observacion_masiva', methods=['POST'])
+@login_required
+def guardar_observacion_masiva():
+  ficha = request.form.get('ficha')
+  tipo = request.form.get('tipo')
+  obs = request.form.get('observacion')
+  estado = request.form.get('estado')
+  aprendices_seleccionados = request.form.getlist('aprendices')
+
+  if not aprendices_seleccionados:
+    return redirect(url_for('admin', ficha=ficha))
+
+  query = 'INSERT INTO observaciones(id_aprendiz, tipo, descripcion, estado) VALUES(%s, %s, %s, %s)'
+  errores = []
+  for doc in aprendices_seleccionados:
+    try:
+      insertar(query, (doc, tipo, obs, estado))
+    except Exception as e:
+      errores.append(f'{doc}: {e}')
+
+  return redirect(url_for('admin', ficha=ficha))
+
+
 @app.route('/guardar_observacion', methods=['GET','POST'])
 @login_required
 def guardar_observacion():
