@@ -8,7 +8,7 @@
             <div id="{% if loop.first %}ultima-entrada{% endif %}"
                 class=" mb-3 p-2 text-sm font-extrabold cursor-pointer" onclick="mostrarBlog(this)"
                 data-titulo="{{ entrada.titulo }}" data-fecha="{{ entrada.fecha }}"
-                data-contenido="{{ entrada.contenido}}" data-autor="{{entrada.autor_nombre}}">
+                data-contenido="{{ entrada.contenido}}" data-autor="{{entrada.autor}}">
                 <p>{{entrada.titulo}}
                 </p>
             </div>
@@ -18,7 +18,6 @@
 
     <div class="fondo_secundario p-5 ">
 
-        {%for entrada in blog %}
         <div class="mb-5">
             <h1 id="titulo-blog" class="text-center uppercase font-bold sm:text-xl"></h1>
         </div>
@@ -30,7 +29,7 @@
             <p> Autor: <span id="autor-blog"></span></p>
             <p> Fecha: <span id="fecha-blog"></span></p>
         </div>
-        {%endfor%}
+
     </div>
     {%endif%}
 </div>

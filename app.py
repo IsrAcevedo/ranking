@@ -111,7 +111,7 @@ def iniciar_sesion():
   if request.method=='POST':
     usuariotxt=request.form.get('usuario')
     password= request.form.get('contra')
-    query = ('select username, password from admins where username=%s')
+    query = ('select username, password,id from admins where username=%s')
     parametros=(usuariotxt,)
     respuesta = consulta(query, parametros)
     if not respuesta:
@@ -120,6 +120,7 @@ def iniciar_sesion():
     contra=usuario['password']
     if check_password_hash(contra,password):
       session['user']=usuario['username']
+      session['id_user']=usuario['id']
       return redirect(url_for('panel'))
     else:
       return render_template('login.html',error='contraseña incorrecta')
@@ -130,8 +131,9 @@ def iniciar_sesion():
 @app.route('/panel')
 @login_required
 def panel():
-  query=('select ficha from cursos')
-  cursos=consulta(query)
+  query=('select ficha from cursos where admin_id = %s')
+  parametros=(session['id_user'],)
+  cursos=consulta(query,parametros)
   return render_template('panel.html', cursos=cursos )
 
 
@@ -440,8 +442,9 @@ def guardando_curso():
   if request.method=='POST':
     ficha = int(request.form.get('ficha'))
     nombre = request.form.get('nombre')
-    query=('insert into cursos(ficha,nombre_curso) values(%s,%s)')
-    parametros=(ficha,nombre)
+    admin_id = session['id_user']
+    query=('insert into cursos(ficha,nombre_curso,admin_id) values(%s,%s,%s)')
+    parametros=(ficha,nombre,admin_id)
     try:
       insertar(query,parametros)
       return redirect(url_for('panel'))  
@@ -461,8 +464,8 @@ def nueva_entrada():
         contenido = request.form.get('contenido')  
         autor_id = session.get('user')  
 
-        query = 'INSERT INTO blog_entradas (titulo, contenido, autor_nombre, fecha) VALUES (%s, %s, %s, NOW())'
-        parametros = (titulo, contenido, autor_id)
+        query = 'INSERT INTO blog_entradas (admin_id, titulo, contenido, fecha) VALUES (%s, %s, %s, NOW())'
+        parametros = (autor_id,titulo, contenido)
 
         try:
             insertar(query, parametros)
@@ -477,7 +480,7 @@ def nueva_entrada():
   
 @app.route('/blog')
 def blog():
-  query=('select titulo, contenido,autor_nombre,fecha from blog_entradas')
+  query=('select b.titulo, b.contenido, b.fecha, a.nombre as autor from blog_entradas as b inner join admins as a on b.admin_id = a.id')
   blog=consulta(query,)
   return render_template('mostrar_entradas.html', blog=blog)     
   
@@ -502,7 +505,9 @@ def añadir_aprendiz():
             return render_template('añadir_aprendiz.html',ficha=ficha, error=f"No se pudo guardar el registro: {e}")
     else:
       ficha = request.args.get('ficha')
-      return render_template('añadir_aprendiz.html',ficha=ficha, editar=False)  
+      query = "SELECT ficha from cursos where admin_id=%s"
+      cursos = consulta(query, (session['id_user'],))
+      return render_template('añadir_aprendiz.html',ficha=ficha, editar=False, cursos=cursos)  
     
     
 @app.route('/editar_aprendiz/<di>', methods=['GET', 'POST'])
@@ -540,4 +545,4 @@ def cerrar_sesion():
 
 
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run(debug=True, port=9000)

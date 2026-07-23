@@ -29,8 +29,18 @@
             </div>
             <div class="flex flex-col mb-5 ">
                 <label class="font-semibold" for=" ficha">ficha del curso</label>
+                {%if editar or ficha%}
                 <input id="ficha" name="ficha" type="number" min="0" class="border-b-2 p-2 font-extralight" required
                     value="{{aprendiz[0].curso_id if editar else ficha}}">
+                {%else%}
+                <select name="ficha" id="ficha" class="border-b-2 p-2 font-extralight" required>
+                    <option value="">Seleccione una ficha</option>
+                    {%for ficha in cursos%}
+                    <option value="{{ficha.ficha}}">{{ficha.ficha}}</option>
+                    {%endfor%}
+                </select>
+                {%endif%}
+
             </div>
 
         </fieldset>
