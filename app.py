@@ -223,7 +223,35 @@ def info_aprendiz(codigo):
       ORDER BY c.fecha_registro DESC
     '''
     calificaciones = consulta(query_cal, (id_aprendiz,))
+    MESES_CORTO = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+    '''
+    for cal in calificaciones:
+      t = cal['titulo'].lower() if cal.get('titulo') else ''
+      if 'quiz' in t:
+        cal['tipo'] = 'Quiz'
+        cal['tipo_badge_class'] = 'bg-emerald-100 text-emerald-800'
+      elif 'practica' in t or 'práctica' in t:
+        cal['tipo'] = 'Práctica'
+        cal['tipo_badge_class'] = 'bg-blue-100 text-blue-800'
+      elif 'taller' in t:
+        cal['tipo'] = 'Taller'
+        cal['tipo_badge_class'] = 'bg-amber-100 text-amber-800'
+      elif 'evaluacion' in t or 'evaluación' in t:
+        cal['tipo'] = 'Evaluación'
+        cal['tipo_badge_class'] = 'bg-purple-100 text-purple-800'
+      else:
+        cal['tipo'] = 'Actividad'
+        cal['tipo_badge_class'] = 'bg-emerald-100 text-emerald-800'
 
+      if cal.get('fecha_clase'):
+        try:
+          fc = cal['fecha_clase']
+          cal['fecha_formateada'] = f"{fc.day:02d} {MESES_CORTO[fc.month]} {fc.year}"
+        except Exception:
+          cal['fecha_formateada'] = str(cal.get('fecha_clase'))
+      else:
+        cal['fecha_formateada'] = ''
+'''
   return render_template('aprendiz.html', observaciones=observaciones, calificaciones=calificaciones, codigo=codigo)
 
 
@@ -536,7 +564,12 @@ def editar_aprendiz(di):
         return render_template('admin.html',ficha=ficha, error=f"No se pudo editar el registro: {e}")
   
   
-    
+@app.route('/configuracion')
+@login_required
+def configuracion():
+  return render_template('configuracion.html')
+
+
 @app.route('/cerrar_sesion')
 def cerrar_sesion():
   session.pop('user',None)
@@ -545,4 +578,4 @@ def cerrar_sesion():
 
 
 if __name__ == '__main__':
-  app.run(debug=True, port=9000)
+  app.run(debug=True, port=7000)
