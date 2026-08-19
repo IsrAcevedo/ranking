@@ -4,15 +4,18 @@
 {% if ficha%}
 <nav class="flex mt-2 items-center justify-center gap-2 w-[95%] m-auto">
     <a href="{{url_for('temas_formacion', ficha=ficha)}}"
-        class="fondo_verde text-white font-semibold px-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center">
+        class="fondo_verde text-white font-semibold p-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center">
         <button>ver
             temas de formacion </button></a>
+    <a href="{{url_for('inasistencia_grupal', ficha=ficha)}}"
+        class=" fondo_verde text-white font-semibold  p-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center"><button>
+            ver inasistencias</button></a>
     <a href="{{url_for('blog')}}"
-        class=" fondo_verde text-white font-semibold  px-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center"><button>
-            blog
-            de programacion</button></a>
+        class=" fondo_verde text-white font-semibold  p-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center"><button>
+            blog</button></a>
+
     <a href="{{url_for('index')}}"
-        class=" fondo_verde text-white font-semibold  px-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center"><button>salir</button></a>
+        class=" fondo_verde text-white font-semibold  p-4 rounded shadow-md transition duration-200 color-amarillo sm:h-auto h-[60px] flex items-center"><button>salir</button></a>
 
 
 </nav>
@@ -244,17 +247,9 @@
                     <!-- Info Aprendices y Boton -->
                     <div class="relative z-10 mt-auto pt-6 border-t border-gray-100 flex items-center justify-between">
                         <div class="flex items-center gap-2 text-gray-600">
-                            <div class="bg-gray-50 p-2 rounded-lg">
-                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                                    </path>
-                                </svg>
-                            </div>
                             <div class="leading-tight">
-                                <span class="block font-bold text-lg text-gray-800">{{programa.total_aprendices}}</span>
-                                <span class="block text-xs text-gray-400 font-semibold uppercase">Aprendices</span>
+                                <span class=" font-bold text-lg text-gray-800">{{programa.total_aprendices}}</span>
+                                <span class=" text-xs text-gray-400 font-semibold uppercase">Aprendices</span>
                             </div>
                         </div>
 
@@ -417,87 +412,7 @@
         </div>
     </section>
 
-    <!-- BENEFICIOS DEL SISTEMA SECTION -->
-    <section class="py-16 px-6 sm:px-12 bg-white">
-        <div
-            class="max-w-6xl mx-auto border border-gray-100 rounded-3xl p-8 sm:p-12 shadow-sm relative overflow-hidden">
-            <div class="text-center mb-10">
-                <h2
-                    class="text-2xl sm:text-3xl font-extrabold text-gray-800 fuente_titulo bg-white px-4 inline-block relative z-10">
-                    Beneficios del sistema</h2>
-                <div class="absolute top-16 left-0 w-full border-t border-gray-200 z-0 hidden sm:block"></div>
-            </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
-                <!-- Beneficio 1: Motivación -->
-                <div class="flex items-center gap-4 group">
-                    <div
-                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-lg">Motivación</h4>
-                        <p class="text-xs text-gray-500 mt-1 leading-snug">Inspira a los aprendices a superarse cada
-                            día.</p>
-                    </div>
-                </div>
-
-                <!-- Beneficio 2: Disciplina -->
-                <div class="flex items-center gap-4 group">
-                    <div
-                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-lg">Disciplina</h4>
-                        <p class="text-xs text-gray-500 mt-1 leading-snug">Fomenta hábitos y comportamientos positivos.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Beneficio 3: Seguimiento -->
-                <div class="flex items-center gap-4 group">
-                    <div
-                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-lg">Seguimiento</h4>
-                        <p class="text-xs text-gray-500 mt-1 leading-snug">Permite un seguimiento claro y en tiempo
-                            real.</p>
-                    </div>
-                </div>
-
-                <!-- Beneficio 4: Reconocimiento -->
-                <div class="flex items-center gap-4 group">
-                    <div
-                        class="w-14 h-14 bg-white border border-gray-200 rounded-full flex items-center justify-center flex-shrink-0 text-[#2e7d32] group-hover:scale-110 group-hover:bg-green-50 transition-all shadow-sm">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-gray-800 text-lg">Reconocimiento</h4>
-                        <p class="text-xs text-gray-500 mt-1 leading-snug">Destaca el esfuerzo y los logros de los
-                            aprendices.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <!-- BUSCAR APRENDIZ SECTION -->
     <section class="py-8 px-6 sm:px-12 bg-white pb-16" id="buscador">
         <div

@@ -217,10 +217,8 @@ def info_aprendiz(codigo):
     id_aprendiz = res_id[0]['id']
     query_cal = '''
       SELECT c.id_calificacion, c.nota, c.fecha_registro, cl.titulo, cl.fecha AS fecha_clase
-      FROM calificaciones c
-      INNER JOIN clases cl ON c.id_clase = cl.id_clase
-      WHERE c.id_aprendiz = %s
-      ORDER BY c.fecha_registro DESC
+      FROM aprendices a INNER JOIN clases cl ON cl.curso_id = a.curso_id LEFT JOIN calificaciones c  ON c.id_clase = cl.id_clase
+    AND c.id_aprendiz = a.id WHERE a.id = %s ORDER BY cl.fecha DESC
     '''
     calificaciones = consulta(query_cal, (id_aprendiz,))
     MESES_CORTO = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
@@ -425,6 +423,43 @@ def editar_observacion(id_observacion):
     return render_template('calificar.html', codigo=codigo, calificacion=None, ficha=ficha, observacion=observacion, editar_obs=True)
 
 
+@app.route('/inasistencia_grupal/<ficha>', methods=['GET', 'POST'])
+def inasistencia_grupal(ficha):
+  fecha_seleccionada = request.values.get('fecha')
+  
+  query_fechas = """
+    SELECT DISTINCT DATE(o.fecha) AS fecha 
+    FROM observaciones o 
+    INNER JOIN aprendices a ON a.di = o.id_aprendiz 
+    WHERE o.tipo = 'Inasistencia' AND a.curso_id = %s 
+    ORDER BY fecha DESC
+  """
+  lista_fechas_raw = consulta(query_fechas, (ficha,))
+  
+  lista_fechas = []
+  if lista_fechas_raw:
+    for f in lista_fechas_raw:
+      lista_fechas.append(str(f['fecha']))
+  
+  if lista_fechas and not fecha_seleccionada:
+    fecha_seleccionada = lista_fechas[0]
+    
+  aprendices = []
+  if fecha_seleccionada:
+    query_aprendices = """
+      SELECT concat(a.nombre, ' ', a.apellidos) AS nombre, o.descripcion 
+      FROM observaciones o 
+      INNER JOIN aprendices a ON a.di = o.id_aprendiz 
+      WHERE o.tipo = 'Inasistencia' AND DATE(o.fecha) = %s AND a.curso_id = %s 
+      ORDER BY concat(a.nombre, ' ', a.apellidos)
+    """
+    aprendices = consulta(query_aprendices, (fecha_seleccionada, ficha))
+    
+  return render_template('inasistencias_grupal.html', 
+                         ficha=ficha, 
+                         lista_fechas=lista_fechas, 
+                         fecha_seleccionada=fecha_seleccionada, 
+                         aprendices=aprendices)
 
 @app.route('/registrar_clase', methods=['GET','POST'])
 @login_required

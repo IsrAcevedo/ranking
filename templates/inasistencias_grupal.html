@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="max-w-4xl mx-auto p-4 sm:p-6 mt-2">
+    <!-- Encabezado y Navegación -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-200">
+        <div>
+            <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
+                <svg class="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+                Inasistencias Grupales
+            </h2>
+            <p class="text-sm text-gray-500 font-medium mt-1">Ficha: <span class="font-bold text-gray-700">{{ ficha
+                    }}</span></p>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('ranking') }}"
+                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <!-- Filtro por Fecha -->
+    {% if lista_fechas %}
+    <div
+        class="bg-white rounded-2xl p-5 mb-6 shadow-xs border border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <label for="fecha" class="text-sm font-bold text-gray-700 flex items-center gap-2">
+            <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.447.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z">
+                </path>
+            </svg>
+            Seleccionar Fecha de Inasistencia:
+        </label>
+
+        <form method="GET" action="{{ url_for('inasistencia_grupal', ficha=ficha) }}"
+            class="flex items-center gap-2 w-full sm:w-auto">
+            <select name="fecha" id="fecha" onchange="this.form.submit()"
+                class="w-full sm:w-64 bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 font-semibold cursor-pointer shadow-xs">
+                {% for fecha in lista_fechas %}
+                <option value="{{ fecha }}" {% if fecha==fecha_seleccionada %}selected{% endif %}>
+                    {{ fecha }}
+                </option>
+                {% endfor %}
+            </select>
+            <noscript>
+                <button type="submit"
+                    class="bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-xl">Filtrar</button>
+            </noscript>
+        </form>
+    </div>
+
+    <!-- Tabla Responsive de Aprendices con Inasistencia -->
+    {% if aprendices %}
+    <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 bg-emerald-50/50 border-b border-emerald-100/60 flex items-center justify-between">
+            <h3 class="text-base font-bold text-emerald-950 flex items-center gap-2">
+
+                Aprendices con Inasistencia ({{ fecha_seleccionada }})
+            </h3>
+            <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full">
+                Total: {{ aprendices|length }}
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-gray-700">
+                <thead class="bg-gray-50/80 text-xs text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                    <tr>
+                        <th scope="col" class="px-6 py-3.5 font-bold w-16 text-center">#</th>
+                        <th scope="col" class="px-6 py-3.5 font-bold">Aprendiz</th>
+                        <th scope="col" class="px-6 py-3.5 font-bold">Descripción / Motivo</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for aprendiz in aprendices %}
+                    <tr class="hover:bg-gray-50/80 transition-colors">
+                        <td class="px-6 py-4 text-center font-medium text-gray-400">{{ loop.index }}</td>
+                        <td class="px-6 py-4 font-bold text-gray-900 whitespace-nowrap">
+                            {{ aprendiz.nombre }}
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">
+                            {{ aprendiz.descripcion if aprendiz.descripcion else 'Sin observación registrada' }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-xs">
+        <p class="text-gray-500 font-medium">No se encontraron inasistencias registradas para la fecha seleccionada ({{
+            fecha_seleccionada }}).</p>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- Estado sin inasistencias en la ficha -->
+    <div class="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-xs max-w-lg mx-auto my-8">
+        <div
+            class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-1">¡Sin inasistencias registradas!</h3>
+        <p class="text-gray-500 text-sm">Esta ficha no registra novedades de inasistencia en el sistema.</p>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
