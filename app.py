@@ -150,7 +150,7 @@ def admin():
     query = ('select di, puntos,fecha_nac, concat(nombre, " ",apellidos) as nombre_completo from aprendices where curso_id = %s order by nombre asc')
     parametros=(ficha,)
     lista_aprendices = consulta(query, parametros)
-    query_clases=('select titulo, fecha from clases where curso_id = %s ORDER BY fecha desc')
+    query_clases=('select id_clase, titulo, descripcion, fecha from clases where curso_id = %s ORDER BY fecha desc')
     lista_clases=consulta(query_clases, parametros)
     return render_template('admin.html', aprendices= lista_aprendices, ficha=ficha, clases=lista_clases, fecha_actual=date.today() )
   return render_template('admin.html')
@@ -485,6 +485,46 @@ def registrar_clase():
       return render_template('admin.html',ficha=ficha, error= f'clases no registrada \n {e}')
   else:
     return redirect(url_for('panel'))  
+   
+@app.route('/editar_clase/<id_clase>', methods=['GET', 'POST'])
+@login_required
+def editar_clase(id_clase):
+  if request.method == 'GET':
+    query_get = 'SELECT id_clase, curso_id, titulo, descripcion, fecha FROM clases WHERE id_clase = %s'
+    res = consulta(query_get, (id_clase,))
+    if not res:
+      return redirect(url_for('panel'))
+    
+    clase = res[0]
+    ficha = clase['curso_id']
+    
+    query_aprendices = ('select di, puntos, fecha_nac, concat(nombre, " ", apellidos) as nombre_completo from aprendices where curso_id = %s order by nombre asc')
+    lista_aprendices = consulta(query_aprendices, (ficha,))
+    
+    query_clases = ('select id_clase, titulo, descripcion, fecha from clases where curso_id = %s ORDER BY fecha desc')
+    lista_clases = consulta(query_clases, (ficha,))
+    
+    return render_template('admin.html', 
+                           aprendices=lista_aprendices, 
+                           ficha=ficha, 
+                           clases=lista_clases, 
+                           fecha_actual=date.today(), 
+                           clase_editar=clase, 
+                           editar_clase=True)
+  else:
+    ficha = request.form.get('ficha')
+    titulo = request.form.get('titulo')
+    descripcion = request.form.get('descripcion')
+    fecha = request.form.get('fecha')
+    
+    query_update = 'UPDATE clases SET titulo = %s, descripcion = %s, fecha = %s WHERE id_clase = %s'
+    parametros_update = (titulo, descripcion, fecha, id_clase)
+    
+    try:
+      insertar(query_update, parametros_update)
+      return redirect(url_for('admin', ficha=ficha))
+    except Exception as e:
+      return render_template('admin.html', ficha=ficha, error=f'Clase no actualizada \n {e}')
    
 #mostrar clases filtradas por ficha
 @app.route('/temas_de_formacion/<ficha>')
