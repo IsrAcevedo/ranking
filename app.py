@@ -187,7 +187,8 @@ def calificar():
     try:
         insertar(query_cal, parametros_cal)
     except mysql.connector.Error as err:
-        query_clases = 'SELECT id_clase, titulo, fecha FROM clases WHERE curso_id = %s ORDER BY fecha DESC'
+        # query_clases = 'SELECT id_clase, titulo, fecha FROM clases WHERE curso_id = %s ORDER BY fecha DESC'
+        query_clases = "SELECT c.id_clase, c.titulo, c.fecha FROM clases c WHERE c.curso_id = %s AND NOT EXISTS (SELECT 1 FROM calificaciones cal WHERE cal.id_clase = c.id_clase AND cal.id_aprendiz = %s) ORDER BY c.fecha DESC;"
         clases = consulta(query_clases, (ficha,))
         if err.errno == 1062:
             return render_template('calificar.html', error="Este aprendiz ya fue calificado para la actividad seleccionada.", codigo=doc, observacion=None, puntaje=acumulado, ficha=ficha, clases=clases, calificacion=True)
@@ -207,6 +208,30 @@ def calificar():
 @app.route('/info_aprendiz/<codigo>')
 def info_aprendiz(codigo):
   documento = codigo
+
+  # Obtener información básica, puesto dentro del curso y cantidad de clases
+  query_aprendiz = """
+    SELECT a.di, a.nombre, a.apellidos, a.puntos, a.puesto, a.curso_id, c.nombre_curso, c.cantidad_clases
+    FROM (
+      SELECT *, RANK() OVER(PARTITION BY curso_id ORDER BY puntos DESC) as puesto
+      FROM aprendices
+    ) as a
+    INNER JOIN cursos as c ON a.curso_id = c.ficha
+    WHERE a.di = %s
+  """
+  res_aprendiz = consulta(query_aprendiz, (documento,))
+  datos_aprendiz = None
+  if res_aprendiz:
+    datos_aprendiz = res_aprendiz[0]
+    datos_aprendiz['iniciales'] = f"{datos_aprendiz['nombre'][0]}{datos_aprendiz['apellidos'][0]}"
+    total_clases = datos_aprendiz['cantidad_clases']
+    if total_clases != 0:
+      puntos_maximos = total_clases * 20
+      rendimiento = (datos_aprendiz['puntos'] / puntos_maximos) * 100
+    else:
+      rendimiento = 0
+    datos_aprendiz['rendimiento'] = round(rendimiento, 2)
+
   query_obs = ('select id_observacion, tipo,descripcion,DATE_SUB(fecha, INTERVAL 5 HOUR) AS fecha,estado from observaciones where id_aprendiz = %s ORDER BY fecha DESC')
   observaciones = consulta(query_obs, (documento,))
   # Obtener el id interno del aprendiz para buscar sus calificaciones
@@ -221,36 +246,8 @@ def info_aprendiz(codigo):
     AND c.id_aprendiz = a.id WHERE a.id = %s ORDER BY cl.fecha DESC
     '''
     calificaciones = consulta(query_cal, (id_aprendiz,))
-    MESES_CORTO = ['', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-    '''
-    for cal in calificaciones:
-      t = cal['titulo'].lower() if cal.get('titulo') else ''
-      if 'quiz' in t:
-        cal['tipo'] = 'Quiz'
-        cal['tipo_badge_class'] = 'bg-emerald-100 text-emerald-800'
-      elif 'practica' in t or 'práctica' in t:
-        cal['tipo'] = 'Práctica'
-        cal['tipo_badge_class'] = 'bg-blue-100 text-blue-800'
-      elif 'taller' in t:
-        cal['tipo'] = 'Taller'
-        cal['tipo_badge_class'] = 'bg-amber-100 text-amber-800'
-      elif 'evaluacion' in t or 'evaluación' in t:
-        cal['tipo'] = 'Evaluación'
-        cal['tipo_badge_class'] = 'bg-purple-100 text-purple-800'
-      else:
-        cal['tipo'] = 'Actividad'
-        cal['tipo_badge_class'] = 'bg-emerald-100 text-emerald-800'
 
-      if cal.get('fecha_clase'):
-        try:
-          fc = cal['fecha_clase']
-          cal['fecha_formateada'] = f"{fc.day:02d} {MESES_CORTO[fc.month]} {fc.year}"
-        except Exception:
-          cal['fecha_formateada'] = str(cal.get('fecha_clase'))
-      else:
-        cal['fecha_formateada'] = ''
-'''
-  return render_template('aprendiz.html', observaciones=observaciones, calificaciones=calificaciones, codigo=codigo)
+  return render_template('aprendiz.html', observaciones=observaciones, calificaciones=calificaciones, codigo=codigo, aprendiz=datos_aprendiz)
 
 
 @app.route('/editar_calificacion/<id_calificacion>', methods=['GET', 'POST'])
